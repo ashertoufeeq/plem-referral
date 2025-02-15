@@ -17,11 +17,11 @@ const Login = () => {
   return (<div style={{ minHeight: "100vh", backgroundColor: "#eee", }}>
             <Row style={{minHeight: '100vh'}} justify={"center"} align={"middle"}>
               <Col md={14}>
-              
+                
               </Col>
               <Col md={8}>
               <Card style={{width:"100%"}}>
-                <div style={{ textAlign: "center", width :'100%' }}>
+                <div style={{ width :'100%' }}>
                   <Title level={2}>Login</Title>
                  
                   <Form form={form} onFinish={onFinish} layout="vertical">
@@ -37,9 +37,7 @@ const Login = () => {
                   </Form>
                   <div>
                     <Typography.Paragraph style={{textAlign: 'left', marginTop: 10}}>
-                      <Button type="link">
                         Need Help? Contact Us
-                      </Button>
                     </Typography.Paragraph>
                   </div>
                   <br/>

@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import AppRouter from "components/router";
 import "antd/dist/reset.css";
+import "./App.css"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
