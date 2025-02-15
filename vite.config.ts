@@ -7,7 +7,11 @@ export default defineConfig({
   resolve: {
     alias: {
       'interfaces': path.resolve(__dirname, "src/interfaces"),
-      'reducers': path.resolve(__dirname, "src/reducers")
+      'reducers': path.resolve(__dirname, "src/reducers"),
+      'components': path.resolve(__dirname, "src/components"),
+      'screens': path.resolve(__dirname, "src/screens"),
+      'constants': path.resolve(__dirname, "src/constants"),
+      'helpers': path.resolve(__dirname, "src/helpers")
     },
   },
 });

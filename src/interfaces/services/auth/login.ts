@@ -1,10 +1,11 @@
-import axios from "axios";
+import { loadAPI } from "helpers/api";
 
 interface IRequest {
     email: string;
     password: string
 }
 
-export const loginUserService = async (credentials: IRequest) => await axios.post('/v1/plembox/external/auth/login', credentials);
-
-//http://localhost:9092
+export const loginUserService = (credentials: IRequest) => loadAPI('/v1/plembox/external/auth/login', {
+    data: credentials,
+    secure: false
+});
