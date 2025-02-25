@@ -44,6 +44,7 @@ export const loadAPI = async (url: string, opts: Record<string, any> = {}) => {
           ? { Authorization: `Bearer ${await getAccessToken()}` }
           : {}),
         ...headers,
+        method:'POST'
       },
       ...options,
     });
