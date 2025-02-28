@@ -1,6 +1,6 @@
 import { GetProp, UploadProps } from "antd";
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+export type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 export const getBase64 = (img: FileType, callback: (url: string) => void) => {
     const reader = new FileReader();
