@@ -2,16 +2,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "reducers/authSlice";
 import { Button, Input, Form, Typography, Alert, Card, Row, Col } from "antd";
 import { RootState, AppDispatch } from "store";
+import { useCallback } from "react";
+import { LoginReq } from "interfaces/entity/login";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
 const Login = () => {
+  const navigate = useNavigate()
   const [form] = Form.useForm();
   const dispatch = useDispatch<AppDispatch>();
+
+  const loginUserCallback = useCallback((values: LoginReq)=>(dispatch(loginUser({...values,navigate}))),[dispatch,navigate])
+
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
-  const onFinish = (values: { email: string; password: string }) => {
-    dispatch(loginUser(values));
+  const onFinish = (values: LoginReq) => {
+    loginUserCallback(values)
   };
 
   return (<div style={{ minHeight: "100vh", backgroundColor: "#eee", }}>
