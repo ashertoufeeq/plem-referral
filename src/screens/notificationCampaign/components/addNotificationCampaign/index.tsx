@@ -8,18 +8,22 @@ import {
     Typography 
 } from "antd";
 import ScreenWrapper from "components/ScreenWrapper";
-import { useState } from "react";
+import { FC, useState } from "react";
 import NotificationDetails from "../notificationDetailsForm";
 import ArticleDetails from "../articleDetails";
 import OtherDetails from "../otherDetails";
 
-const NotificationCampaign = () => {
+interface IProps{
+    isCampaign?: boolean
+  }
+
+const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
   const [form] = Form.useForm()
   const [currentStep, setCurrentStep] = useState(0);    
       
   const steps = [
     { 
-        title: 'Notification Details', 
+        title:'Notification Details', 
         Component: <NotificationDetails/>,
         desc:"These details represent the notifications that will be sent to users."
     },
@@ -39,7 +43,7 @@ const NotificationCampaign = () => {
             <div>
                 <div style={{display : 'flex',flexDirection:'row', justifyContent: 'space-between', alignItems:"center"}}>
                     <Typography.Title level={3}>
-                        New Notification Campaign
+                        New {isCampaign?"Campaign":'Notification'} 
                     </Typography.Title>
                 </div>
                 <br/>

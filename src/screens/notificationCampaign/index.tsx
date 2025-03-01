@@ -3,9 +3,13 @@ import ScreenWrapper from "components/ScreenWrapper";
 import { columns } from "./columns";
 import { useNavigate } from "react-router-dom";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { FC } from "react";
 
+interface IProps{
+  isCampaign?: boolean
+}
 
-const NotificationCampaign = () => {
+const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
     const navigate = useNavigate()
     
       
@@ -68,11 +72,11 @@ const NotificationCampaign = () => {
             <div>
                 <div style={{display : 'flex',flexDirection:'row', justifyContent: 'space-between', alignItems:"center"}}>
                     <Typography.Title level={3}>
-                        Notification Campaign
+                        {isCampaign?"Campaign":"Notification"}
                     </Typography.Title>
                     <div>
                         <Button type="primary" icon={<PlusCircleOutlined/>} onClick={() => {navigate('./add')}}>
-                            New Notification Campaign
+                            New {isCampaign?"Campaign":"Notification"}
                         </Button>
                     </div>
                 </div>

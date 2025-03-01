@@ -22,6 +22,9 @@ dependencies:
   jwt-decode:
     specifier: ^4.0.0
     version: 4.0.0
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   moment:
     specifier: ^2.30.1
     version: 2.30.1
@@ -43,11 +46,20 @@ dependencies:
   react-router-dom:
     specifier: ^7.1.5
     version: 7.1.5(react-dom@18.2.0)(react@18.3.1)
+  redux:
+    specifier: ^5.0.1
+    version: 5.0.1
+  redux-persist:
+    specifier: ^6.0.0
+    version: 6.0.0(react@18.3.1)(redux@5.0.1)
 
 devDependencies:
   '@eslint/js':
     specifier: ^9.19.0
     version: 9.19.0
+  '@types/lodash':
+    specifier: ^4.17.16
+    version: 4.17.16
   '@types/node':
     specifier: ^22.13.4
     version: 22.13.4
@@ -1133,6 +1145,10 @@ packages:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
     dev: true
 
+  /@types/lodash@4.17.16:
+    resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
+    dev: true
+
   /@types/node@22.13.4:
     resolution: {integrity: sha512-ywP2X0DYtX3y08eFVx5fNIw7/uIv8hYUKgXoK8oayJlLnKcRfEYCxWMVE1XagUdVtCJlZT1AU4LXEABW+L1Peg==}
     dependencies:
@@ -1965,6 +1981,10 @@ packages:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
 
+  /lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: false
+
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
@@ -2784,6 +2804,19 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
+    dev: false
+
+  /redux-persist@6.0.0(react@18.3.1)(redux@5.0.1):
+    resolution: {integrity: sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==}
+    peerDependencies:
+      react: '>=16'
+      redux: '>4.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.3.1
+      redux: 5.0.1
     dev: false
 
   /redux-thunk@3.1.0(redux@5.0.1):

@@ -11,9 +11,9 @@ const AppRouter = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route element={<PrivateRoute />}>
-            <Route path="/campaigns" element={<NotificationCampaign />} />
-            <Route path="/campaigns/add" element={<AddNotificationCampaign />} />
-            <Route path="/campaigns/edit/:id" element={<AddNotificationCampaign />} />
+            <Route path="/campaigns" element={<NotificationCampaign isCampaign={true} />} />
+            <Route path="/campaigns/add" element={<AddNotificationCampaign isCampaign={true} />} />
+            <Route path="/campaigns/edit/:id" element={<AddNotificationCampaign isCampaign={true} />} />
             <Route path="/notifications" element={<NotificationCampaign />} />
             <Route path="/notifications/add" element={<AddNotificationCampaign />} />
             <Route path="/notifications/edit/:id" element={<AddNotificationCampaign />} />
