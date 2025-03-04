@@ -13,7 +13,9 @@ export default defineConfig({
       'screens': path.resolve(__dirname, "src/screens"),
       'constants': path.resolve(__dirname, "src/constants"),
       'helpers': path.resolve(__dirname, "src/helpers"),
-      'utils': path.resolve(__dirname, 'src/utils')
+      'utils': path.resolve(__dirname, 'src/utils'),
+      'hooks': path.resolve(__dirname, "src/hooks")
+
     },
   },
 });

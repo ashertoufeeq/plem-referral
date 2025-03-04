@@ -14,6 +14,7 @@ const ScreenWrapper = ({children}:{ children: React.ReactNode;}) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const locations = useLocation()
+    
     const logoutCallback = useCallback(()=>{
         dispatch(logout());
         navigate("/"); // Redirect to home after logout
@@ -37,18 +38,20 @@ const ScreenWrapper = ({children}:{ children: React.ReactNode;}) => {
                             />
                             <br/>
                         </div>
-                        <Menu 
-                            onClick={({key})=>{navigate(`/${key}`)}}
-                            mode="inline" 
-                            theme="dark" 
-                            selectedKeys={pathName}
-                        >
-                            <Menu.Item key="notifications" icon={<BellOutlined />}>Notifications</Menu.Item>
-                            <Menu.Item key="campaigns" icon={<MailOutlined />}>Campaigns</Menu.Item>
-                            <Menu.Item key="3" icon={<LogoutOutlined />} onClick={logoutCallback}>
-                                {isCollapsed?"":'Logout'}
-                            </Menu.Item>
-                        </Menu>
+                        <div>
+                            <Menu 
+                                onClick={({key})=>{navigate(`/${key}`)}}
+                                mode="inline" 
+                                theme="dark" 
+                                selectedKeys={pathName}
+                            >
+                                <Menu.Item key="campaigns" icon={<MailOutlined />}>Campaigns</Menu.Item>
+                                <Menu.Item key="notifications" icon={<BellOutlined />}>Notifications</Menu.Item>
+                                <Menu.Item key="3" icon={<LogoutOutlined />} onClick={logoutCallback}>
+                                    {isCollapsed?"":'Logout'}
+                                </Menu.Item>
+                            </Menu>
+                        </div>
                     </Sider>
                 <Layout>
                     <Content style={{ padding: 24 }}>

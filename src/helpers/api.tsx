@@ -1,12 +1,18 @@
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "constants/storage";
 import { DEFAULT_BASE_URL } from "constants/environment";
 
-axios.defaults.baseURL = DEFAULT_BASE_URL;
+const instance = axios.create()
 
-const getAccessToken = async () => {
+instance.defaults.baseURL = DEFAULT_BASE_URL;
+instance.defaults.headers.common = {
+  token: '',
+}
+
+
+export const getAccessToken = async () => {
   const accessToken = localStorage.getItem(ACCESS_TOKEN);
   const refreshToken = localStorage.getItem(REFRESH_TOKEN);
   if (!(accessToken && refreshToken)) throw Error("No user found");
@@ -37,14 +43,23 @@ export const loadAPI = async (url: string, opts: Record<string, any> = {}) => {
     ...options
   } = opts;
 
+  const token = secure?await getAccessToken():'';
+  const defaultHeaders = new AxiosHeaders({
+    token // just a case preset
+  });
+
+  defaultHeaders.concat(headers)
+  
   try {
-    const res = await axios(url, {
+    instance.defaults.headers.common = defaultHeaders;
+    const res = await instance(url, {
       headers: {
         ...(secure
-          ? { Authorization: `Bearer ${await getAccessToken()}` }
+          ? { "token": token }
           : {}),
         ...headers,
       },
+      method: "GET",
       ...options,
     });
 

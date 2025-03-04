@@ -8,7 +8,7 @@ interface UsePaginatedDataParams<T> {
   transformData?: (data: ApiResponse<T>) => ApiResponse<T>;
   autoLoad?: boolean;
   limit?: number
-  getUrl?: (o: {page: number; search?: string; limit?: number }) => string
+  getUrl?: (o: { page: number; search?: string; limit?: number }) => string
 }
 
 const usePaginatedData = <T>({
@@ -44,7 +44,7 @@ const usePaginatedData = <T>({
   }, [autoLoad, refresh, ]);
 
   return {
-    state: { apiData, loading, search },
+    state: { apiData, loading, search, },
     fetchData,
     search: (query: string) => searchFunc(query),
     nextPage: () => apiData?.data.pageable.pageNumber !== undefined && apiData?.data.last === false && fetchData(apiData.data.pageable.pageNumber + 1, search),

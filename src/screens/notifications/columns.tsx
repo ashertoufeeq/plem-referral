@@ -10,13 +10,13 @@ export const columns: Array<ColumnType<any>> = [
     },
     {
       title: "Campaign ID",
-      dataIndex: "campaign_id",
-      key: "campaign_id",
+      dataIndex: "campaignId",
+      key: "campaignId",
     },
     {
       title: "Campaign Name",
-      dataIndex: "campaign_name",
-      key: "campaign_name",
+      dataIndex: "campaignName",
+      key: "campaignName",
     },
     {
       title: "Schedule Time",
@@ -26,25 +26,20 @@ export const columns: Array<ColumnType<any>> = [
     },
     {
       title: "Notification Title",
-      dataIndex: "notification_title",
-      key: "notification_title",
+      dataIndex: "notificationTitle",
+      key: "notificationTitle",
     },
     {
       title: "Article Title",
-      dataIndex: "article_title",
-      key: "article_title",
+      dataIndex: "articleTitle",
+      key: "articleTitle",
     },
-    {
-      title: "Target Audience",
-      dataIndex: "target_audience",
-      key: "target_audience",
-      render: (text) => text.join(", "),
-    },
-    {
-      title: "Plembox Partner ID",
-      dataIndex: "plembox_partner_id",
-      key: "plembox_partner_id",
-    },
+    // {
+    //   title: "Target Audience",
+    //   dataIndex: "target_audience",
+    //   key: "target_audience",
+    //   render: (text) => (text || []).join(", "),
+    // },
     {
       title: "Published",
       dataIndex: "published",
@@ -53,14 +48,14 @@ export const columns: Array<ColumnType<any>> = [
     },
     {
       title: "Created At",
-      dataIndex: "created_at",
-      key: "created_at",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render:(data) => moment(data).format('lll')
     },
     {
       title: "Updated At",
-      dataIndex: "updated_at",
-      key: "updated_at",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
       render:(data) => moment(data).format('lll')
     },
   ];

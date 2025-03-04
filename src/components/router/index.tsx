@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "screens/login";
-import NotificationCampaign from "screens/notificationCampaign";
-import AddNotificationCampaign from "screens/notificationCampaign/components/addNotificationCampaign";
+import NotificationCampaign from "screens/notifications";
+import AddNotificationCampaign from "screens/notifications/components/addNotificationCampaign";
 import PrivateRoute from "components/router/components/privateRoute";
 import NotFound from "components/notFound";
+import Campaigns from "screens/campaigns";
 
 const AppRouter = () => {
   return (
@@ -11,7 +12,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route element={<PrivateRoute />}>
-            <Route path="/campaigns" element={<NotificationCampaign isCampaign={true} />} />
+            <Route path="/campaigns" element={<Campaigns/>} />
             <Route path="/campaigns/add" element={<AddNotificationCampaign isCampaign={true} />} />
             <Route path="/campaigns/edit/:id" element={<AddNotificationCampaign isCampaign={true} />} />
             <Route path="/notifications" element={<NotificationCampaign />} />
