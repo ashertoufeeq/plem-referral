@@ -3,6 +3,7 @@ import {
     Card,
     Col,
     Form,
+    notification,
     Row,
     Steps,
     Typography 
@@ -12,6 +13,8 @@ import { FC, useState } from "react";
 import NotificationDetails from "../notificationDetailsForm";
 import ArticleDetails from "../articleDetails";
 import OtherDetails from "../otherDetails";
+import { createNotification } from "interfaces/services/notification";
+import { useNavigate } from "react-router-dom";
 
 interface IProps{
     isCampaign?: boolean
@@ -19,26 +22,42 @@ interface IProps{
 
 const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
   const [form] = Form.useForm()
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(0);    
-      
+  const [record, setRecord] = useState<Record<string,any> | null>(null)
+  const [submitting, setSubmitting] = useState<boolean>(false)
+
   const steps = [
     { 
         title:'Notification Details', 
-        Component: <NotificationDetails/>,
+        Component: <NotificationDetails form={form}/>,
         desc:"These details represent the notifications that will be sent to users."
     },
     {
         title: 'Artical Details',
-        Component: <ArticleDetails/>,
+        Component: <ArticleDetails form={form}/>,
         desc: "These details will be show in our app when user clicks the notification."
     },
     {
         title: 'Other Details',
-        Component: <OtherDetails form={form}/>,
+        Component: <OtherDetails form={form} isCampaign={isCampaign}/>,
         desc: "These are other factors depending on which notification will be sent."
     },
     ]
-    
+ 
+  const onSubmit = async (payload:Record<string,any>) => {
+    setSubmitting(true);
+    const { data,error } = await createNotification({...payload, notificationMedium: 'Push Notification'}, isCampaign);
+    console.log(data,'data');
+    setSubmitting(false);
+    if(!error){
+        notification.success({message:isCampaign?"Campaign Created":"Notification Created"})
+        navigate(-1)
+    }else{
+        notification.error({message: "Something went wrong!"})
+    } 
+  }
+
   return (<ScreenWrapper>
             <div>
                 <div style={{display : 'flex',flexDirection:'row', justifyContent: 'space-between', alignItems:"center"}}>
@@ -63,24 +82,31 @@ const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
                                 description={steps[currentStep]?.desc}
                             />
                             <br/>
-                            <Form form={form} layout="vertical" wrapperCol={{md: 16}}>
+                            <Form initialValues={{published: true}} form={form} layout="vertical" wrapperCol={{md: 16}} onFinish={(values)=>{
+                                console.log('Finished', values, record)
+                                onSubmit({...record,...values})
+                            }}>
                                 {steps[currentStep]?.Component}
                             </Form>
                         </Card>
                         <div className="my-3" style={{display: 'flex', flexDirection :"row"}}> 
                                 {currentStep !== (steps.length -1) ? 
-                                    <Button className="mr-2" style={{minWidth: '150px'}} type="primary" onClick={()=>{setCurrentStep(p=> p+1)}}>
+                                    <Button disabled={submitting} className="mr-2" style={{minWidth: '150px'}} type="primary" onClick={()=>{
+                                            const data = form.getFieldsValue();
+                                            setRecord( p => ({...p, ...data}))
+                                            setCurrentStep(p=> p+1)
+                                        }}>
                                         Next
                                     </Button>
                                 : null}
                                 {currentStep ===  (steps.length -1)? 
-                                    <Button className="mr-2" type="primary" style={{minWidth: '150px'}}>
+                                    <Button disabled={submitting} loading={submitting} className="mr-2" type="primary" style={{minWidth: '150px'}} onClick={()=>{form.submit()}}>
                                         Submit
                                     </Button>
                                 : null}
 
                                 {currentStep !== 0 ? 
-                                    <Button className="mr-2" type="dashed" onClick={()=>{setCurrentStep(p=> p-1)}} style={{minWidth: '150px'}}>
+                                    <Button disabled={submitting} className="mr-2" type="dashed" onClick={()=>{setCurrentStep(p=> p-1)}} style={{minWidth: '150px'}}>
                                         Previous
                                     </Button>
                                 : null}

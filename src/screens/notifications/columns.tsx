@@ -1,13 +1,13 @@
-import { Tag } from "antd";
+import { Button, Popconfirm, Tag } from "antd";
 import { ColumnType } from "antd/es/table"
 import moment from "moment"
 
-export const columns: Array<ColumnType<any>> = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-    },
+export const columns: (o:{onSend: (id: string) => void, sending:boolean,sendingId:string | null, isCampaign?: boolean}) =>Array<ColumnType<any>> = ({onSend,sending, sendingId, isCampaign}) => ([
+    ...(isCampaign?[]:[{
+      title: "Notification ID",
+      dataIndex: "notificationId",
+      key: "notificationId",
+    }]),
     {
       title: "Campaign ID",
       dataIndex: "campaignId",
@@ -20,8 +20,8 @@ export const columns: Array<ColumnType<any>> = [
     },
     {
       title: "Schedule Time",
-      dataIndex: "schedule_time",
-      key: "schedule_time",
+      dataIndex: "scheduleTime",
+      key: "scheduleTime",
       render:(data) => data?moment(data).format('lll'): 'Immediate'
     },
     {
@@ -33,18 +33,6 @@ export const columns: Array<ColumnType<any>> = [
       title: "Article Title",
       dataIndex: "articleTitle",
       key: "articleTitle",
-    },
-    // {
-    //   title: "Target Audience",
-    //   dataIndex: "target_audience",
-    //   key: "target_audience",
-    //   render: (text) => (text || []).join(", "),
-    // },
-    {
-      title: "Published",
-      dataIndex: "published",
-      key: "published",
-      render: (text) => (text ? <Tag color="success" style={{width: '80px', textAlign: 'center'}}>Published</Tag> : <Tag style={{width: '80px', textAlign: 'center'}}>Draft</Tag>),
     },
     {
       title: "Created At",
@@ -58,4 +46,40 @@ export const columns: Array<ColumnType<any>> = [
       key: "updatedAt",
       render:(data) => moment(data).format('lll')
     },
-  ];
+    ...(isCampaign? [{
+      title: "",
+      dataIndex: "campaignId",
+      key: "published",
+      render: (campaignId:string) => (
+        <Popconfirm
+          title="Are you sure you want to send this notification?"
+          onConfirm={(e) => {
+            e?.stopPropagation();
+            e?.preventDefault();
+            onSend(campaignId);
+          }}          
+          onCancel={(e)=>{  e?.stopPropagation();
+            e?.preventDefault();}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button
+            size="small"
+            type="dashed"
+            disabled={sending && campaignId === sendingId}
+            loading={sending && campaignId === sendingId}
+            onClick={(e) => {e.stopPropagation();e.preventDefault()}}
+          >
+            Send Notification
+          </Button>
+      </Popconfirm>
+    ),
+    }]:[
+      {
+        title: "Published",
+        dataIndex: "published",
+        key: "published",
+        render: (text:string) => (text ? <Tag color="success" style={{width: '80px', textAlign: 'center'}}>Published</Tag> : <Tag style={{width: '80px', textAlign: 'center'}}>Draft</Tag>),
+      },
+    ]),
+  ]);

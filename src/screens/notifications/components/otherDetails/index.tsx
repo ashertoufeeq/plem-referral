@@ -1,50 +1,25 @@
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { DatePicker, Divider, Form,  FormInstance, GetProp, message, Select, Upload, UploadProps } from "antd";
-import { FC, useState } from "react";
-import { getBase64 } from "utils/base64";
-
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+import { DatePicker, Divider, Form,  FormInstance, Select, Switch, } from "antd";
+import UploadComponent from "components/upload";
+import { useAPI } from "hooks/useApi";
+import { User } from "interfaces/entity/user";
+import moment from "moment";
+import { FC } from "react";
+import { getFinalStringForSearch } from "utils/string";
 
 interface IProps {
     form: FormInstance
+    isCampaign?: boolean
 }  
 
-const OtherDetails: FC<IProps> = ({form}) => {
-    const [loading, setLoading] = useState(false);
-    const userSelectionType = Form.useWatch('userSelectionType', form)
+const OtherDetails: FC<IProps> = ({form, isCampaign}) => {
+    const userSelectionType = Form.useWatch('targetAudienceType', form)
     const trigger = Form.useWatch('trigger', form)
-  
-    const handleChange: UploadProps['onChange'] = (info) => {
-      if (info.file.status === 'uploading') {
-        setLoading(true);
-        return;
-      }
-      if (info.file.status === 'done') {
-        // Get this url from response in real world.
-        getBase64(info.file.originFileObj as FileType, (url:string) => {
-          setLoading(false);
-          console.log(url)
-        });
-      }
-    };
-  
-    const beforeUpload = (file: FileType) => {
-        const isCSV = file.type === 'text/csv';
-        if (!isCSV) {
-          message.error('You can only csv can be uploaded!');
-        }
-        const isLt10M = file.size / 1024 / 1024 < 10;
-        if (!isLt10M) {
-          message.error('Image must smaller than 10MB!');
-        }
-        return isCSV && isLt10M;
-      };
-      
-    
+    const {data: res} = useAPI<{status: string; message: string; data: Array<User>}>('/b2b/v1/partner/users')    
+
     return (
         <>
             <Divider/>
-            <Form.Item label={'User Selection'} name={'userSelectionType'}>
+            <Form.Item label={'User Selection'} name={'targetAudienceType'}>
                 <Select
                     showSearch
                     placeholder="Select"
@@ -54,48 +29,60 @@ const OtherDetails: FC<IProps> = ({form}) => {
                     }}
                     options={[
                         {
-                            value: 'all',
+                            value: 'ALL',
                             label: 'All'
                         },
                         {
-                            value: 'specific_users',
+                            value: 'SPECIFIC_USERS',
                             label: 'Specifice Users',
                         },
                         {
-                            value: 'csv_upload',
+                            value: 'UPLOAD',
                             label: 'Upload'
                         }                        
                     ]}
                 />
             </Form.Item>
-            {userSelectionType==='specific_users' &&
-                <Form.Item label={'Users'} name={'selectedUsers'}>
+            {userSelectionType==='SPECIFIC_USERS' &&
+                <Form.Item label={'Users'} name={'targetAudience'}>
                     <Select
+                        mode="multiple"
+                        allowClear
                         showSearch
                         placeholder="Select"
                         optionFilterProp="label"
                         onSearch={(s) => {console.log(s,'search')}}
-                        options={[
-                        ]}
+                        options={(res?.data || []).map((i)=>({
+                            value: (i.mobile || "").slice(2,12),
+                            search: getFinalStringForSearch(['mobile', 'name', 'email',], i.mobile, i),
+                            title: <p
+                            style={{
+                              margin: 0,
+                              padding: 0,
+                              fontSize: 13,
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {(i.mobile || "").slice(2,12)}
+                          </p>,
+                          label: <>
+                            <b>{(i.mobile || "").slice(2,12)}</b>
+                            <br/>
+                            <small>
+                                {moment(i.createdAt).format("lll")}
+                                {i.name?" | "+i.name:""}
+                                {i.email ? " | "+ i.email:""}
+                            </small>
+                          </>
+
+                        })) as any}
+                        labelRender={(p) => <>{(p as any).title} </>}
                 />
             </Form.Item>}
            
-            {userSelectionType==='csv_upload' &&
-                <Form.Item label={'Users'} name={'selectedUsersCSV'}>
-                   <Upload
-                    name="attachment"
-                    listType="picture-card"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    beforeUpload={beforeUpload}
-                    onChange={handleChange}
-                >
-                    <button style={{ border: 0, background: 'none' }} type="button">
-                        {loading ? <LoadingOutlined /> : <PlusOutlined />}
-                        <div style={{ marginTop: 8 }}>Upload</div>
-                    </button>
-                </Upload>
+            {userSelectionType==='UPLOAD' &&
+                <Form.Item name='csvUrl' label="Users">
+                    <UploadComponent name={"csvUrl"} form={form} allowedTypes={['text/csv']}/>
                 </Form.Item>
             }
             <Form.Item label={'Trigger'} name={'trigger'}>
@@ -119,10 +106,13 @@ const OtherDetails: FC<IProps> = ({form}) => {
                 />
             </Form.Item>
             {trigger ==='specific_time' && 
-                <Form.Item name={'schedule_time'}>
+                <Form.Item name={'scheduleTime'}>
                     <DatePicker showTime/>
                 </Form.Item>
             }
+            {isCampaign ?<></>:<Form.Item name={'published'} label={'Published'}>
+                <Switch />
+            </Form.Item>}
         </>
         )
 }

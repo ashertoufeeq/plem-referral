@@ -1,10 +1,13 @@
-import { Button, Table, Typography } from "antd";
+import { Button, notification, Table, Typography } from "antd";
 import ScreenWrapper from "components/ScreenWrapper";
 import { columns } from "./columns";
 import { useNavigate } from "react-router-dom";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { FC, useEffect } from "react";
+import { FC, useState } from "react";
 import usePaginatedData from "hooks/usePagination";
+import { sendNotificationByCampaignId } from "interfaces/services/notification";
+import TableDrawerHoc from "hocs/TableDrawerHoc";
+import DetailsDrawer from "./components/detailsDrawer";
 
 interface IProps{
   isCampaign?: boolean
@@ -12,12 +15,30 @@ interface IProps{
 
 const Notifications:FC<IProps> = ({isCampaign}) => {
     const navigate = useNavigate()
-    useEffect(()=>{
-      console.log("mount ", isCampaign)
-    },[])
     const {state, gotoPage} = usePaginatedData<any>({endpoint: `b2b/v1/plembox/external/${isCampaign?'campaigns':'notifications'}`})
     const { apiData  } = state;
-    
+    const [sending, setSending]=useState(false);
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
+    const [currentRecord, setCurrentRecord] = useState<any>(null)
+    const [sendingId, setSendingId] = useState<string|null>(null)
+
+    const toggle = () => {
+        setDrawerOpen(p=> !p)
+    }
+
+    const onSend = async (id: string) => {
+        setSending(true);
+        setSendingId(id);
+        const {error} = await sendNotificationByCampaignId(id)
+        setSending(false);
+        setSendingId(null);
+        if(error){
+            notification.error({message: "Something went wrong!"})
+        }else{
+            notification.success({message: "Notification Successfully Sent"})
+        }
+    }
+
     return (<ScreenWrapper>
             <div>
                 <div style={{display : 'flex',flexDirection:'row', justifyContent: 'space-between', alignItems:"center"}}>
@@ -33,8 +54,20 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                 <br/>
             </div>
             <Table
+                onRow={(r)=>({
+                    onClick: ()=>{
+                        setDrawerOpen(true);
+                        console.log(r,'row')
+                        setCurrentRecord(r)
+                    }
+                })}
                 scroll={{x: true}}
-                columns={columns}
+                columns={[{
+                    title: "Sr. No.",
+                    key: "srno",
+                    render: (_: any, __: any, index: number) =>
+                      (apiData?.data?.number || 0) * (apiData?.data?.size || 10) + index + 1,
+                  },...columns( {onSend, sending, isCampaign, sendingId})]}
                 dataSource={apiData?.data?.content || []}   
                 pagination={
                   {
@@ -45,6 +78,22 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                   }
                 }         
             />
+            {drawerOpen && 
+                <TableDrawerHoc 
+                    isOpen={drawerOpen} 
+                    toggle={toggle}
+                    currentRecord={currentRecord}
+                    drawerProps={{
+                        title: isCampaign?'Campaign Details':'Notification Details',
+                        subTitle: `${currentRecord?.campaignId || currentRecord?.notificationId}`,
+                        Render: () => {
+                            return <div>
+                                <DetailsDrawer record={currentRecord}/>
+                            </div>
+                        }
+                    }} 
+                />
+            }
         </ScreenWrapper>
         );
 };
