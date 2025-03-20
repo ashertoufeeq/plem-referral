@@ -34,7 +34,7 @@ const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
         desc:"These details represent the notifications that will be sent to users."
     },
     {
-        title: 'Artical Details',
+        title: 'Article Details',
         Component: <ArticleDetails form={form}/>,
         desc: "These details will be show in our app when user clicks the notification."
     },

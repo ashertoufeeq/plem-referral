@@ -15,11 +15,12 @@ const Login = () => {
 
   const loginUserCallback = useCallback((values: LoginReq)=>(dispatch(loginUser({...values,navigate}))),[dispatch,navigate])
 
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading } = useSelector((state: RootState) => state.auth);
 
   const onFinish = (values: LoginReq) => {
     loginUserCallback(values)
   };
+
 
   return (<div style={{ minHeight: "100vh", backgroundColor: "#eee", }}>
             <Row style={{minHeight: '100vh'}} justify={"center"} align={"middle"}>
@@ -48,7 +49,7 @@ const Login = () => {
                     </Typography.Paragraph>
                   </div>
                   <br/>
-                  {error && <Alert message={error? "Failed to login":""} type="error" showIcon />}
+                  {/* {error && <Alert message={error? "Failed to login":""} type="error" showIcon />} */}
                 </div>
               </Card>
               </Col>
