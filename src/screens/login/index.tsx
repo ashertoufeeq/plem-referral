@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "reducers/authSlice";
-import { Button, Input, Form, Typography, Alert, Card, Row, Col } from "antd";
+import { Button, Input, Form, Typography, Card, Row, Col } from "antd";
 import { RootState, AppDispatch } from "store";
 import { useCallback } from "react";
 import { LoginReq } from "interfaces/entity/login";
