@@ -1,4 +1,4 @@
-import { Button, notification, Table, Typography } from "antd";
+import { Button, notification, Table, Typography, Grid, List, Card, Tooltip, Popconfirm, Tag } from "antd";
 import ScreenWrapper from "components/ScreenWrapper";
 import { columns } from "./columns";
 import { useNavigate } from "react-router-dom";
@@ -9,12 +9,14 @@ import { sendNotificationByCampaignId } from "interfaces/services/notification";
 import TableDrawerHoc from "hocs/TableDrawerHoc";
 import DetailsDrawer from "./components/detailsDrawer";
 import { campaignListData, notificationListData } from "constants/mock";
+import moment from "moment";
 
 interface IProps{
   isCampaign?: boolean
 }
 
 const Notifications:FC<IProps> = ({isCampaign}) => {
+    const screen = Grid.useBreakpoint()
     const navigate = useNavigate()
     const {state, gotoPage} = usePaginatedData<any>({endpoint: `b2b/v1/plembox/external/${isCampaign?'campaigns':'notifications'}`})
     const { apiData:apiDataFetched  } = state;
@@ -41,6 +43,7 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
             notification.success({message: "Notification Successfully Sent"})
         }
     }
+    console.log(screen)
 
     return (<ScreenWrapper>
             <div>
@@ -56,7 +59,9 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                 </div>
                 <br/>
             </div>
-            <Table
+            {  screen.md ?
+            
+                <Table
                 size="small"
                 onRow={(r)=>({
                     onClick: ()=>{
@@ -81,7 +86,60 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                     onChange: (p) => {gotoPage(p)}
                   }
                 }         
-            />
+            />: <>
+            <List
+                dataSource={apiData?.data?.content || []}
+                renderItem={(item:any, index) => (
+                    <Card
+                        onClick={()=>{
+                            setDrawerOpen(true);
+                            console.log(item,'row')
+                            setCurrentRecord(item)
+                        }}
+                        extra={`#${(apiData?.data?.number || 0) * (apiData?.data?.size || 10) + index + 1}`}
+                        title={item.campaignName}
+                        key={item.campaignId} style={{ marginBottom: 16, textAlign:'left' }} actions={isCampaign?[
+                    <Popconfirm 
+                        title="Are you sure you want to send this notification?"
+                        onConfirm={() => onSend(item.campaignId)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button
+                        type="primary"
+                        disabled={sending && item.campaignId === sendingId}
+                        loading={sending && item.campaignId === sendingId}
+                        >
+                        Send Notification
+                        </Button>
+                    </Popconfirm>]: []}>
+                    <p style={{textAlign: 'left'}}>
+                        <strong>Notification Title</strong>{" "}
+                        <br/>
+                        <Tooltip title={item.notificationTitle}>
+                        {item.notificationTitle.length > 40 ? `${item.notificationTitle.substring(0, 40)}...` : item.notificationTitle}
+                        </Tooltip>
+                    </p>
+                    
+                    <p style={{textAlign: 'left'}}>
+                        <strong>Notification Desc</strong>{" "}
+                        <br/>
+                        <Tooltip title={item.notificationDescription}>
+                        {item.notificationDescription.length > 40 ? `${item.notificationDescription.substring(0, 40)}...` : item.notificationDescription}
+                        </Tooltip>
+                    </p>
+                    <br/>
+                    <p style={{textAlign: 'left'}}>
+                        <strong>Schedule Time:</strong> {item.scheduleTime ? moment(item.scheduleTime).format("lll") : "Immediate"}
+                    </p>
+                    <p style={{textAlign: 'left'}}>
+                        {item.published ? <Tag color="success">Published</Tag> : <Tag>Draft</Tag>}
+                    </p>
+                    
+                    </Card>
+                )}
+                />
+        </>}
             {drawerOpen && 
                 <TableDrawerHoc 
                     isOpen={drawerOpen} 
