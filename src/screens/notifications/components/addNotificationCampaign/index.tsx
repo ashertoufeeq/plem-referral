@@ -3,6 +3,7 @@ import {
     Card,
     Col,
     Form,
+    Grid,
     notification,
     Row,
     Steps,
@@ -26,6 +27,7 @@ const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
   const [currentStep, setCurrentStep] = useState(0);    
   const [record, setRecord] = useState<Record<string,any> | null>(null)
   const [submitting, setSubmitting] = useState<boolean>(false)
+  const screens = Grid.useBreakpoint()
 
   const steps = [
     { 
@@ -67,15 +69,16 @@ const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
                 </div>
                 <br/>
                 <Row>
-                    <Col md={6}>
+                    <Col md={screens?.md?6:24}>
                         <br/>
-                        <Steps
-                            direction="vertical"
+
+                        {screens?.md?<Steps
+                            direction={screens?.md?"vertical":"horizontal"}
                             current={currentStep}
                             items={steps}
-                        />
+                        />:<></>}
                     </Col>
-                    <Col md={18}>
+                    <Col md={screens?.md?18:24}>
                         <Card style={{textAlign: "left"}}>
                             <Card.Meta
                                 title={steps[currentStep]?.title}
