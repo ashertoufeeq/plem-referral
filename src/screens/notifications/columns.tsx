@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Tag } from "antd";
+import { Button, Popconfirm,Tooltip, Tag } from "antd";
 import { ColumnType } from "antd/es/table"
 import moment from "moment"
 
@@ -28,23 +28,35 @@ export const columns: (o:{onSend: (id: string) => void, sending:boolean,sendingI
       title: "Notification Title",
       dataIndex: "notificationTitle",
       key: "notificationTitle",
+      render: (text) => (
+        <div style={{maxWidth: '8vw'}}>
+        <Tooltip title={text}>
+          {text.length > 40 ? `${text.substring(0, 40)}...` : text}
+        </Tooltip>
+        </div>
+      )
     },
     {
       title: "Article Title",
       dataIndex: "articleTitle",
       key: "articleTitle",
+      render: (text) => (<div style={{maxWidth: '8vw'}}>
+        <Tooltip title={text}>
+          {text.length > 40? `${text.substring(0, 40)}...` : text}
+        </Tooltip>
+        </div>
+      )
     },
     {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      render:(data) => moment(data).format('lll')
-    },
-    {
-      title: "Updated At",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render:(data) => moment(data).format('lll')
+      render: (data) => (
+        <div style={{width: '6vw'}}>
+          <div>{moment(data).format('LT')}</div>
+          <div>{moment(data).format("ll")}</div>
+        </div>
+      )
     },
     ...(isCampaign? [{
       title: "",

@@ -57,6 +57,7 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                 <br/>
             </div>
             <Table
+                size="small"
                 onRow={(r)=>({
                     onClick: ()=>{
                         setDrawerOpen(true);
