@@ -50,7 +50,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
               selectedKeys={pathName}
             >
               <Menu.Item key="campaigns" icon={<MailOutlined />}>
-                Campaigns
+                Templates
               </Menu.Item>
               <Menu.Item key="notifications" icon={<BellOutlined />}>
                 Notifications

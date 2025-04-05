@@ -1,20 +1,20 @@
-import { Button, Popconfirm,Tooltip, Tag } from "antd";
+import { Button, Tooltip, Tag } from "antd";
 import { ColumnType } from "antd/es/table"
 import moment from "moment"
 
-export const columns: (o:{onSend: (id: string) => void, sending:boolean,sendingId:string | null, isCampaign?: boolean}) =>Array<ColumnType<any>> = ({onSend,sending, sendingId, isCampaign}) => ([
+export const columns: (o:{onSend: (row: any) => void, sending:boolean,isCampaign?: boolean}) =>Array<ColumnType<any>> = ({onSend, isCampaign}) => ([
     ...(isCampaign?[]:[{
       title: "Notification ID",
       dataIndex: "notificationId",
       key: "notificationId",
     }]),
     {
-      title: "Campaign ID",
+      title: "Template ID",
       dataIndex: "campaignId",
       key: "campaignId",
     },
     {
-      title: "Campaign Name",
+      title: "Template Name",
       dataIndex: "campaignName",
       key: "campaignName",
     },
@@ -60,31 +60,20 @@ export const columns: (o:{onSend: (id: string) => void, sending:boolean,sendingI
     },
     ...(isCampaign? [{
       title: "",
-      dataIndex: "campaignId",
       key: "published",
-      render: (campaignId:string) => (
-        <Popconfirm
-          title="Are you sure you want to send this notification?"
-          onConfirm={(e) => {
-            e?.stopPropagation();
-            e?.preventDefault();
-            onSend(campaignId);
-          }}          
-          onCancel={(e)=>{  e?.stopPropagation();
-            e?.preventDefault();}}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button
+      render: (row:any) => (
+        <Button
             size="small"
             type="dashed"
-            disabled={sending && campaignId === sendingId}
-            loading={sending && campaignId === sendingId}
-            onClick={(e) => {e.stopPropagation();e.preventDefault()}}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault()
+              onSend(row);
+
+            }}
           >
             Send Notification
           </Button>
-      </Popconfirm>
     ),
     }]:[
       {

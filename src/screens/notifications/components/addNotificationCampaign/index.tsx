@@ -40,11 +40,11 @@ const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
         Component: <ArticleDetails form={form}/>,
         desc: "These details will be show in our app when user clicks the notification."
     },
-    {
+    ...(isCampaign?[]: [{
         title: 'Other Details',
         Component: <OtherDetails form={form} isCampaign={isCampaign}/>,
         desc: "These are other factors depending on which notification will be sent."
-    },
+    }]),
     ]
  
   const onSubmit = async (payload:Record<string,any>) => {

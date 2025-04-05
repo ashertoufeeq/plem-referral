@@ -16,12 +16,12 @@ const DetailsDrawer:FC<IProps> = ({record}) => {
         <Descriptions.Item label="Notification Medium">{record.notificationMedium}</Descriptions.Item>
         <Descriptions.Item label="Schedule Time">{new Date(record.scheduleTime).toLocaleString()}</Descriptions.Item>
         <Descriptions.Item label="Status">{record.status}</Descriptions.Item>
-        <Descriptions.Item label="Target Audience">
-          {JSON.parse(record.targetAudience).map((number:string) => (
+        {record.targetAudience?<Descriptions.Item label="Target Audience">
+          {record.targetAudience? JSON.parse(record.targetAudience).map((number:string) => (
             <Tag color="blue" key={number}>{number}</Tag>
-          ))}
-        </Descriptions.Item>
-        <Descriptions.Item label="Segment Name">{record.segmentName}</Descriptions.Item>
+          )): null}
+        </Descriptions.Item>: null}
+       {record.segmentName? <Descriptions.Item label="Segment Name">{record.segmentName}</Descriptions.Item>: null}
       </Descriptions>
 
       <div style={{ marginTop: 16 }}>

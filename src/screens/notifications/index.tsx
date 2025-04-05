@@ -1,15 +1,16 @@
-import { Button, notification, Table, Typography, Grid, List, Card, Tooltip, Popconfirm, Tag } from "antd";
+import { Button, Table, Typography, Grid, List, Card, Tooltip, Popconfirm, Tag, notification } from "antd";
 import ScreenWrapper from "components/ScreenWrapper";
 import { columns } from "./columns";
 import { useNavigate } from "react-router-dom";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { FC, useState } from "react";
 import usePaginatedData from "hooks/usePagination";
-import { sendNotificationByCampaignId } from "interfaces/services/notification";
 import TableDrawerHoc from "hocs/TableDrawerHoc";
 import DetailsDrawer from "./components/detailsDrawer";
 import { campaignListData, notificationListData } from "constants/mock";
 import moment from "moment";
+import OtherDetailsDrawer from "./components/otherDetailsDrawer";
+import { createNotification } from "interfaces/services/notification";
 
 interface IProps{
   isCampaign?: boolean
@@ -25,35 +26,61 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
     const [sending, setSending]=useState(false);
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
     const [currentRecord, setCurrentRecord] = useState<any>(null)
-    const [sendingId, setSendingId] = useState<string|null>(null)
+    const [showOtherDetailsDrawer, setShowOtherDetailsDrawer] = useState<boolean>(false)
+
 
     const toggle = () => {
         setDrawerOpen(p=> !p)
     }
-
-    const onSend = async (id: string) => {
-        setSending(true);
-        setSendingId(id);
-        const {error} = await sendNotificationByCampaignId(id)
-        setSending(false);
-        setSendingId(null);
-        if(error){
-            notification.error({message: "Something went wrong!"})
-        }else{
-            notification.success({message: "Notification Successfully Sent"})
-        }
+    
+    const toggleOtherDetailsDrawer = () => {
+        setShowOtherDetailsDrawer(p=> !p)
     }
-    console.log(screen)
+
+    const onSend = async (row:any) => {
+        console.log(row,"row")
+        setCurrentRecord(row);
+        setShowOtherDetailsDrawer(row);
+    }
+
+    const onSubmit = async (payload:Record<string,any>) => {
+        setSending(true);
+        const { data,error } = await createNotification({
+            ...payload,
+            campaignName: currentRecord?.campaignName,
+            campaignId: currentRecord?.campaignId,
+            notificationTitle: currentRecord?.notificationTitle,
+            notificationDescription: currentRecord?.notificationDescription,
+            notificationDeeplink: currentRecord?.notificationDeeplink,
+            notificationImageUrl: currentRecord?.notificationImageUrl,
+            articleTitle:currentRecord?.articleTitle,
+            articleDescription: currentRecord?.articleDescription,
+            articleDeeplink:currentRecord?.articleDeeplink,
+            articleImageUrl:currentRecord?.articleImageUrl,
+            notificationMedium: 'Push Notification'
+        });
+        console.log(data,'data');
+        setSending(false);
+        if(!error){
+            setDrawerOpen(false);
+            setCurrentRecord(null);
+            setSending(false)
+            notification.success({message: "Notification Request Sent"})
+            navigate(-1)
+        }else{
+            notification.error({message: "Something went wrong!"})
+        } 
+      }
 
     return (<ScreenWrapper>
             <div>
                 <div style={{display : 'flex',flexDirection:'row', justifyContent: 'space-between', alignItems:"center"}}>
                     <Typography.Title level={3}>
-                        {isCampaign?"Campaign":"Notification"}
+                        {isCampaign?"Template":"Notification"}
                     </Typography.Title>
                     <div>
                         <Button type="primary" icon={<PlusCircleOutlined/>} onClick={() => {navigate('./add')}}>
-                            New {isCampaign?"Campaign":"Notification"}
+                            New {isCampaign?"Template":"Notification"}
                         </Button>
                     </div>
                 </div>
@@ -76,7 +103,7 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                     key: "srno",
                     render: (_: any, __: any, index: number) =>
                       (apiData?.data?.number || 0) * (apiData?.data?.size || 10) + index + 1,
-                  },...columns( {onSend, sending, isCampaign, sendingId})]}
+                  },...columns( {onSend, sending, isCampaign})]}
                 dataSource={apiData?.data?.content || []}   
                 pagination={
                   {
@@ -101,14 +128,12 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                         key={item.campaignId} style={{ marginBottom: 16, textAlign:'left' }} actions={isCampaign?[
                     <Popconfirm 
                         title="Are you sure you want to send this notification?"
-                        onConfirm={() => onSend(item.campaignId)}
+                        onConfirm={() => onSend(item)}
                         okText="Yes"
                         cancelText="No"
                     >
                         <Button
                         type="primary"
-                        disabled={sending && item.campaignId === sendingId}
-                        loading={sending && item.campaignId === sendingId}
                         >
                         Send Notification
                         </Button>
@@ -146,7 +171,7 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                     toggle={toggle}
                     currentRecord={currentRecord}
                     drawerProps={{
-                        title: isCampaign?'Campaign Details':'Notification Details',
+                        title: isCampaign?'Template Details':'Notification Details',
                         subTitle: `${currentRecord?.campaignId || currentRecord?.notificationId}`,
                         Render: () => {
                             return <div>
@@ -156,6 +181,7 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
                     }} 
                 />
             }
+            {showOtherDetailsDrawer? <OtherDetailsDrawer isOpen={showOtherDetailsDrawer} submitLoading={sending} onSubmit={onSubmit} toggle={toggleOtherDetailsDrawer} />: null}
         </ScreenWrapper>
         );
 };

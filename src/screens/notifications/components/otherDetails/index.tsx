@@ -8,7 +8,7 @@ import { getFinalStringForSearch } from "utils/string";
 
 interface IProps {
     form: FormInstance
-    isCampaign?: boolean
+    isCampaign?: boolean,
 }  
 
 const OtherDetails: FC<IProps> = ({form, isCampaign}) => {
@@ -18,7 +18,7 @@ const OtherDetails: FC<IProps> = ({form, isCampaign}) => {
 
     return (
         <>
-            <Divider/>
+            {isCampaign?null:<Divider/>}
             <Form.Item label={'User Selection'} name={'targetAudienceType'}>
                 <Select
                     showSearch
@@ -85,7 +85,7 @@ const OtherDetails: FC<IProps> = ({form, isCampaign}) => {
                     <UploadComponent name={"csvUrl"} form={form} allowedTypes={['text/csv']}/>
                 </Form.Item>
             }
-            <Form.Item label={'Trigger'} name={'trigger'}>
+            <Form.Item label={'Schedule'} name={'trigger'}>
                 <Select
                     showSearch
                     placeholder="Select"
