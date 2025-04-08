@@ -3,12 +3,13 @@ import { Layout, Menu, Space, Button, Drawer, Grid, Divider, Avatar } from "antd
 import logo from "assets/plem_with_name.png";
 import squareLogo from "assets/plem_square.png";
 import { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "reducers/authSlice";
 import { MainRoutes } from "constants/routes";
 import { Header } from "antd/es/layout/layout";
 import { theme } from "constants/theme";
+import { IApplicationState } from "store";
 
 const { Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -27,6 +28,8 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
   }, [dispatch, navigate]);
 
   const pathName = locations?.pathname.split("/");
+
+  const user = useSelector((state:IApplicationState) => (state?.auth?.user))
 
   return (
     <div style={{ minHeight: "100vh"}}>
@@ -112,7 +115,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
             <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: theme.background }}>
               <div className="row justify-end align-items-center" style={{ width: "100%" }}>
                 <div className="mr-2">
-                  <BellOutlined/>
+                  {user?.email}
                 </div>
                 <div>
                   <Avatar/>

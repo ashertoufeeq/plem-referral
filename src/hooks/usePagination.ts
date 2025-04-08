@@ -34,7 +34,7 @@ const usePaginatedData = <T>({
   };
 
   const searchFunc = useRef(
-    debounce((query: string) => fetchData(1, query), 800)
+    debounce((query: string) => fetchData(0, query), 800)
   ).current;
 
   useEffect(() => {

@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from 'constants/storage';
+import { Role, User } from 'interfaces/entity/user';
 import { loginUserService } from 'interfaces/services/auth/login';
 
 export const loginUser = createAsyncThunk('auth/login', async (creds: {email:string, password:string, navigate:any}) => {
@@ -13,11 +14,11 @@ export const loginUser = createAsyncThunk('auth/login', async (creds: {email:str
     localStorage.setItem(ACCESS_TOKEN, innerData?.token);
     localStorage.setItem(REFRESH_TOKEN, innerData?.refresh_token);
     creds.navigate('/')  
-    return {refresh_token: innerData.refresh_token,access_token: innerData?.token, user:null }
+    return {refresh_token: innerData.refresh_token,access_token: innerData?.token, user:innerData.user, role: innerData.role};
   }else{
     notification.error({message: "Invalid Credentials"})
   }
-  return {refresh_token: null, access_token: null, user:null}
+  return {refresh_token: null, access_token: null, user:null, role: null}
 });
 
 export interface IAuthReducer {
@@ -25,13 +26,15 @@ export interface IAuthReducer {
     error: string | null;
     access_token?: string
     refresh_token?: string;
-    user: {id: number, partnerName: string, partnerId: string, email: string} | null
+    user: User | null
+    role: Role | null
   }
   
   const initialState: IAuthReducer = {
     loading: false,
     user: null,
     error: null,
+    role: null,
   };
 
 const authSlice = createSlice({
@@ -44,6 +47,7 @@ const authSlice = createSlice({
       state.access_token = undefined;
       state.refresh_token = undefined;
       state.user = null;
+      state.role = null
     },
   },
   extraReducers: (builder: any) => {
@@ -51,11 +55,12 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state: { loading: boolean; }) => {
         state.loading = true;
       })
-      .addCase(loginUser.fulfilled, (state: { loading: boolean; access_token: any; refresh_token: any; user: any; }, action: { payload: { access_token: any; refresh_token: any; user: any; }; }) => {
+      .addCase(loginUser.fulfilled, (state: { loading: boolean; access_token: any; refresh_token: any; user: any; role: any }, action: { payload: { access_token: any; refresh_token: any; user: any;role: any }; }) => {
         state.loading = false;
         state.access_token = action.payload?.access_token;
         state.refresh_token = action.payload?.refresh_token;
         state.user = action.payload?.user;
+        state.role = action.payload?.role;
       })
       .addCase(loginUser.rejected, (state: { loading: boolean; error: any; }, action: { error: { message: null; }; }) => {
         state.loading = false;
