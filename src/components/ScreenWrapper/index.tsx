@@ -1,17 +1,20 @@
 import { BellOutlined, LogoutOutlined, MailOutlined, MenuOutlined } from "@ant-design/icons";
-import { Layout, Menu, Space, Button, Drawer, Grid } from "antd";
+import { Layout, Menu, Space, Button, Drawer, Grid, Divider, Avatar } from "antd";
 import logo from "assets/plem_with_name.png";
 import squareLogo from "assets/plem_square.png";
 import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "reducers/authSlice";
+import { MainRoutes } from "constants/routes";
+import { Header } from "antd/es/layout/layout";
+import { theme } from "constants/theme";
 
 const { Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [mobileMenuVisible, setMobileMenuVisible] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,35 +29,42 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathName = locations?.pathname.split("/");
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#eee" }}>
+    <div style={{ minHeight: "100vh"}}>
       <Layout style={{ minHeight: "100vh" }}>
         {/* Sidebar for large screens */}
         {screens.md ? (
           <Sider
             collapsed={isCollapsed}
             onCollapse={() => setIsCollapsed((prev) => !prev)}
-            theme="dark"
+            theme="light"
             collapsible
           >
-            <div onClick={() => navigate("/")} className="my-2" style={{ textAlign: "center" }}>
+            {/* <div onClick={() => navigate("/")} className="my-2" style={{ textAlign: "center" }}>
               <img
                 style={{ height: "35px" }}
                 alt="plem"
                 src={isCollapsed ? squareLogo : logo}
               />
-            </div>
+            </div> */}
             <Menu
+              style={{minHeight: '100%'}}
               onClick={({ key }) => navigate(`/${key}`)}
               mode="inline"
-              theme="dark"
               selectedKeys={pathName}
             >
-              <Menu.Item key="campaigns" icon={<MailOutlined />}>
-                Templates
+              <div className="mt-4 row justify-center align-items-center"> 
+                <img
+                  style={{ height: "20px" }}
+                  alt="plem"
+                  src={isCollapsed ? squareLogo : logo}
+                />
+              </div>
+            <Divider/>
+            {(MainRoutes || []).map((Route)=>(
+              <Menu.Item key={Route.key} icon={Route.icon}>
+                {Route.name}
               </Menu.Item>
-              <Menu.Item key="notifications" icon={<BellOutlined />}>
-                Notifications
-              </Menu.Item>
+            ))}
               <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutCallback}>
                 {!isCollapsed && "Logout"}
               </Menu.Item>
@@ -62,7 +72,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
           </Sider>
         ) : (
           // Mobile menu button
-          <div style={{ padding: "10px", backgroundColor: "#001529", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ padding: "10px", backgroundColor: theme.background, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Button type="text" icon={<MenuOutlined style={{color: "#fff"}}/>} onClick={() => setMobileMenuVisible(true)} />
             <img style={{ height: "35px" }} alt="plem" src={squareLogo} onClick={() => navigate("/")} />
           </div>
@@ -98,9 +108,22 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
 
         {/* Content Area */}
         <Layout>
-          <Content style={{ padding: screens.md ? 24 : 12 }}>
             <Space direction="vertical" style={{ width: "100%" }}>
-              <div style={{ padding: screens.md ? "0 20px" : "0 10px" }}>{children}</div>
+            <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: theme.background }}>
+              <div className="row justify-end align-items-center" style={{ width: "100%" }}>
+                <div className="mr-2">
+                  <BellOutlined/>
+                </div>
+                <div>
+                  <Avatar/>
+              </div>
+              </div>
+            </Header>
+            </Space>
+            <Divider style={{margin:0, padding: 0}}/>
+          <Content style={{backgroundColor: theme.background }}>
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <div style={{ padding: screens.md ? "0 20px" : "0 10px", backgroundColor: theme.background }}>{children}</div>
             </Space>
           </Content>
         </Layout>

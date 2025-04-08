@@ -7,7 +7,6 @@ import { FC, useState } from "react";
 import usePaginatedData from "hooks/usePagination";
 import TableDrawerHoc from "hocs/TableDrawerHoc";
 import DetailsDrawer from "./components/detailsDrawer";
-import { campaignListData, notificationListData } from "constants/mock";
 import moment from "moment";
 import OtherDetailsDrawer from "./components/otherDetailsDrawer";
 import { createNotification } from "interfaces/services/notification";
@@ -19,10 +18,9 @@ interface IProps{
 const Notifications:FC<IProps> = ({isCampaign}) => {
     const screen = Grid.useBreakpoint()
     const navigate = useNavigate()
-    const {state, gotoPage} = usePaginatedData<any>({endpoint: `b2b/v1/plembox/external/${isCampaign?'campaigns':'notifications'}`})
-    const { apiData:apiDataFetched  } = state;
+    const {state, gotoPage} = usePaginatedData<any>({endpoint: `b2b/v1/plembox/external/${isCampaign?'templates':'notifications'}`})
+    const { apiData  } = state;
 
-    const apiData = apiDataFetched || (isCampaign? campaignListData: notificationListData);
     const [sending, setSending]=useState(false);
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
     const [currentRecord, setCurrentRecord] = useState<any>(null)
@@ -57,7 +55,7 @@ const Notifications:FC<IProps> = ({isCampaign}) => {
             articleDescription: currentRecord?.articleDescription,
             articleDeeplink:currentRecord?.articleDeeplink,
             articleImageUrl:currentRecord?.articleImageUrl,
-            notificationMedium: 'Push Notification'
+            notificationMedium: 'Push'
         });
         console.log(data,'data');
         setSending(false);

@@ -3,7 +3,25 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(),],
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+        modifyVars: {
+          '@font-family': 'Inter, sans-serif',
+          '@primary-color': '#3b82f6', // Tailwind blue-500
+          '@text-color': '#1f2937', // slate-800
+          '@text-color-secondary': '#6b7280', // slate-500
+          '@input-bg': '#F9FAFC', // Filled background
+          '@border-radius-base': '8px',
+          '@input-border-color': '#e5e7eb', // gray-200
+          '@card-radius': '12px',
+          '@card-padding-base': '20px',
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       'assets': path.resolve(__dirname, "src/assets"),
@@ -15,7 +33,8 @@ export default defineConfig({
       'helpers': path.resolve(__dirname, "src/helpers"),
       'utils': path.resolve(__dirname, 'src/utils'),
       'hooks': path.resolve(__dirname, "src/hooks"),
-      'hocs': path.resolve(__dirname, "src/hocs")
+      'hocs': path.resolve(__dirname, "src/hocs"),
+      'styles': path.resolve(__dirname, "src/styles"),
     },
   },
 });
