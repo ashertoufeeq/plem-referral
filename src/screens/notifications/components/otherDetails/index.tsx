@@ -1,120 +1,264 @@
-import { DatePicker, Divider, Form,  FormInstance, Select, Switch, } from "antd";
+import { Button, DatePicker, Drawer, Form, FormInstance, List, Modal, Select, Switch, Typography } from "antd";
 import UploadComponent from "components/upload";
 import { useAPI } from "hooks/useApi";
+import { Segment } from "interfaces/entity/segment";
 import { User } from "interfaces/entity/user";
 import moment from "moment";
-import { FC } from "react";
+import { FC, useState } from "react";
+import { Link } from "react-router-dom";
 import { getFinalStringForSearch } from "utils/string";
 
 interface IProps {
-    form: FormInstance
-    isCampaign?: boolean,
-}  
-
-const OtherDetails: FC<IProps> = ({form, isCampaign}) => {
-    const userSelectionType = Form.useWatch('targetAudienceType', form)
-    const trigger = Form.useWatch('trigger', form)
-    const {data: res} = useAPI<{status: string; message: string; data: Array<User>}>('/b2b/v1/partner/users')    
-
-    return (
-        <>
-            {isCampaign?null:<Divider/>}
-            <Form.Item label={'User Selection'} name={'targetAudienceType'}>
-                <Select
-                    showSearch
-                    placeholder="Select"
-                    optionFilterProp="label"
-                    onSearch={(s) => {
-                        console.log(s,'search');
-                    }}
-                    options={[
-                        {
-                            value: 'ALL',
-                            label: 'All'
-                        },
-                        {
-                            value: 'SPECIFIC_USERS',
-                            label: 'Specifice Users',
-                        },
-                        {
-                            value: 'UPLOAD',
-                            label: 'Upload'
-                        }                        
-                    ]}
-                />
-            </Form.Item>
-            {userSelectionType==='SPECIFIC_USERS' &&
-                <Form.Item label={'Users'} name={'targetAudience'}>
-                    <Select
-                        mode="multiple"
-                        allowClear
-                        showSearch
-                        placeholder="Select"
-                        optionFilterProp="label"
-                        onSearch={(s) => {console.log(s,'search')}}
-                        options={(res?.data || []).map((i)=>({
-                            value: (i.mobile || "").slice(2,12),
-                            search: getFinalStringForSearch(['mobile', 'name', 'email',], i.mobile, i),
-                            title: <p
-                            style={{
-                              margin: 0,
-                              padding: 0,
-                              fontSize: 13,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {(i.mobile || "").slice(2,12)}
-                          </p>,
-                          label: <>
-                            <b>{(i.mobile || "").slice(2,12)}</b>
-                            <br/>
-                            <small>
-                                {moment(i.createdAt).format("lll")}
-                                {i.name?" | "+i.name:""}
-                                {i.email ? " | "+ i.email:""}
-                            </small>
-                          </>
-
-                        })) as any}
-                        labelRender={(p) => <>{(p as any).title} </>}
-                />
-            </Form.Item>}
-           
-            {userSelectionType==='UPLOAD' &&
-                <Form.Item name='csvUrl' label="Users">
-                    <UploadComponent name={"csvUrl"} form={form} allowedTypes={['text/csv']}/>
-                </Form.Item>
-            }
-            <Form.Item label={'Schedule'} name={'trigger'}>
-                <Select
-                    showSearch
-                    placeholder="Select"
-                    optionFilterProp="label"
-                    onSearch={(s) => {
-                        console.log(s,'search');
-                    }}
-                    options={[
-                        {
-                            value: 'immediate',
-                            label: 'Immediate'
-                        },
-                        {
-                            value: 'specific_time',
-                            label: 'Specifice Time',
-                        }                        
-                    ]}
-                />
-            </Form.Item>
-            {trigger ==='specific_time' && 
-                <Form.Item name={'scheduleTime'}>
-                    <DatePicker showTime/>
-                </Form.Item>
-            }
-            {isCampaign ?<></>:<Form.Item name={'published'} label={'Published'}>
-                <Switch />
-            </Form.Item>}
-        </>
-        )
+  form: FormInstance;
+  isPreview?: boolean;
 }
+
+const OtherDetails: FC<IProps> = ({ form }) => {
+  const [selectedSegment, setSelectedSegment] = useState<Segment| null>(null);
+  const [showSegmentDetails, setShowSegmentDetails] = useState(false);
+  const userSelectionType = Form.useWatch("targetAudienceType", form);
+  const trigger = Form.useWatch("trigger", form);
+  const { data: res } = useAPI<{
+    status: string;
+    message: string;
+    data: Array<User>;
+  }>("/b2b/v1/partner/users");
+
+  const { data: segmentsRes } = useAPI<{
+    status: string;
+    message: string;
+    data: Array<Segment>;
+  }>("/b2b/v1/plembox/external/segments");
+
+  return (
+    <>
+    <Form
+      form={form}
+      layout="vertical"
+      variant="filled"
+      initialValues={{
+        targetAudienceType: "ALL",
+        trigger: "immediate",
+      }}
+    >
+      <Form.Item label={"User Selection"} name={"targetAudienceType"}>
+        <Select
+          showSearch
+          placeholder="Select"
+          optionFilterProp="label"
+          onSearch={(s) => {
+            console.log(s, "search");
+          }}
+          options={[
+            {
+              value: "ALL",
+              label: "All",
+            },
+            {
+              value: "SPECIFIC_USERS",
+              label: "Specifice Users",
+            },
+            {
+              value: "UPLOAD",
+              label: "Upload",
+            },
+            {
+              value: "SEGMENT",
+              label: "Segment",
+            },
+          ]}
+        />
+      </Form.Item>
+      {userSelectionType === "SPECIFIC_USERS" && (
+        <Form.Item label={"Users"} name={"targetAudience"}>
+          <Select
+            mode="multiple"
+            allowClear
+            showSearch
+            placeholder="Select"
+            optionFilterProp="label" 
+            filterOption={(input, option: any) => {
+              return (
+                option?.search?.toLowerCase().includes(input.toLowerCase()) ||
+                option?.label?.props?.children?.toString().toLowerCase().includes(input.toLowerCase())
+              );
+            }}
+            options={
+              (res?.data || []).map((i) => ({
+                value: (i.mobile || "").slice(2, 12),
+                search: getFinalStringForSearch(
+                  ["mobile", "name", "email"],
+                  i.mobile,
+                  i
+                ),
+                title: (
+                  <p
+                    style={{
+                      margin: 0,
+                      padding: 0,
+                      fontSize: 13,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {(i.mobile || "").slice(2, 12)}
+                  </p>
+                ),
+                label: (
+                  <>
+                    <b>{(i.mobile || "").slice(2, 12)}</b>
+                    <br />
+                    <small>
+                      {moment(i.createdAt).format("lll")}
+                      {i.name ? " | " + i.name : ""}
+                      {i.email ? " | " + i.email : ""}
+                    </small>
+                  </>
+                ),
+              })) as any
+            }
+            labelRender={(p) => <>{(p as any).title} </>}
+          />
+        </Form.Item>
+      )}
+
+      {userSelectionType === "UPLOAD" && (
+        <Form.Item name="csvUrl" label="Users">
+          <UploadComponent
+            name={"csvUrl"}
+            form={form}
+            allowedTypes={["text/csv"]}
+          />
+        </Form.Item>
+      )}
+
+    {userSelectionType === "SEGMENT" && <Form.Item
+        label={"Select Segment"}
+        name={"segmentName"}
+        rules={[
+          {
+            required: true,
+            message: "please select segment",
+          },
+        ]}
+      >
+        <Select
+          allowClear
+          showSearch
+          placeholder="Select"
+          optionFilterProp="label"
+          filterOption={(input, option: any) => {
+            return (
+              option?.search?.toLowerCase().includes(input.toLowerCase()) ||
+              option?.label?.props?.children?.toString().toLowerCase().includes(input.toLowerCase())
+            );
+          }}
+          options={
+            (segmentsRes?.data || []).map((i: any) => ({
+              value: i.id,
+              search: getFinalStringForSearch(
+                ["segmentName"],
+                i.segmentName,
+                i
+              ),
+              title: (
+                <p
+                  style={{
+                    margin: 0,
+                    padding: 0,
+                    fontSize: 13,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {i.segmentName}
+                </p>
+              ),
+              label: (
+                <>
+                  <b>{i.segmentName}</b>
+                  <br />
+                  <small>
+                    {i.createdAt ? moment(i.createdAt).format('lll') : ""}
+                    {i.targetAudience?.length? " | " + (i.targetAudience.length || 0) + ' Users': ""}
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedSegment(i);
+                        setShowSegmentDetails(true);
+                      }}
+                    >
+                      View Segment
+                    </Button>
+                  </small>
+                  
+                </>
+              ),
+            })) as any
+          }
+          labelRender={(p) => <>{(p as any).title}</>}
+        />
+      </Form.Item>}
+
+      <Form.Item label={"Schedule"} name={"trigger"}>
+        <Select
+          showSearch
+          placeholder="Select"
+          optionFilterProp="label"
+          onSearch={(s) => {
+            console.log(s, "search");
+          }}
+          options={[
+            {
+              value: "immediate",
+              label: "Immediate",
+            },
+            {
+              value: "specific_time",
+              label: "Specifice Time",
+            },
+          ]}
+        />
+      </Form.Item>  
+      {trigger === "specific_time" && (
+        <Form.Item name={"scheduleTime"}>
+          <DatePicker showTime />
+        </Form.Item>
+      )}
+    </Form>
+      <Drawer
+        title="Segment Details"
+        open={showSegmentDetails}
+        onClose={() => {
+          setShowSegmentDetails(false);
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setShowSegmentDetails(false);
+            }}
+          >
+            Close
+          </Button>,
+        ]}
+        width={440}
+      >
+        <>
+        <Typography.Title level={5} className="my-4 text-left">{selectedSegment?.segmentName}</Typography.Title>
+        <List
+          bordered
+          dataSource={selectedSegment?.targetAudience||[]}
+          renderItem={(item:string) => (
+            <List.Item>
+              <Typography.Text></Typography.Text> {item}
+            </List.Item>
+          )}
+        />
+        </>
+      </Drawer>
+    </>
+  );
+};
 
 export default OtherDetails;

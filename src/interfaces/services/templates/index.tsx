@@ -18,6 +18,18 @@ export const fetchTemplateByTemplateId = async (templateId: string) => loadAPI(`
     method: "GET",
   })
 
+export const fetchTemplateByEventId = async (eventId: string) => loadAPI(`/b2b/v1/plembox/external/templates-by-event-id?eventId=${eventId}&notificationMedium=PUSH`, {
+    sercure: true,
+    method: "GET",
+  })
+
+
+export const toggleArchive = async ({id}:{id: string}) => loadAPI(`/b2b/v1/plembox/external/template/toggle-archive/${id}`, {
+    sercure: true,
+    method: "POST",
+})
+  
+
 export const approveTemplate = async ({id}:{id: string}) => loadAPI(`/b2b/v1/plembox/external/template/approve/${id}`, {
   sercure: true,
   method: "POST",
@@ -29,4 +41,9 @@ export const rejectTemplate = async ({id, rejectionReason}:{id: string, rejectio
   data:{
     rejectionReason
   }
+})
+
+export const fetchTemplateCounts = async () => loadAPI(`b2b/v1/plembox/external/templates/count`, {
+  secure: true,
+  method: "GET",
 })

@@ -24,5 +24,6 @@ export type Template = {
     rejectReason: string | null;
     scheduleTime: string | null; // ISO date or null
     global: boolean;
+    archive: boolean;
   };
   

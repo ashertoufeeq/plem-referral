@@ -1,7 +1,7 @@
 import { loadAPI } from "helpers/api";
 
 
-export const createNotification = async (body: Record<string,any>, isCampaign?: boolean) => loadAPI(`/b2b/v1/plembox/external/${ isCampaign?'campaign':'notification'}/create`, {
+export const createNotification = async (body: Record<string,any>) => loadAPI(`/b2b/v1/plembox/external/notification/create`, {
   sercure: true,
   data: body,
   method: "POST",

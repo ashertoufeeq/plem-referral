@@ -1,5 +1,5 @@
 import {
-    Affix,
+  Affix,
   Alert,
   Button,
   Card,
@@ -12,35 +12,30 @@ import {
   Steps,
   Typography,
 } from "antd";
-import { FC, useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  createTemplate,
-  fetchTemplateByTemplateId,
+  fetchTemplateByEventId,
 } from "interfaces/services/templates";
 import { useNavigate, useParams } from "react-router-dom";
 import CheckListCard from "components/CheckListCard";
-import TemplateDetailForm from "../TemplateDetailForm";
 import PreviewNotificationCard from "components/PreviewNotificationCard";
-import NotificationDetailForm from "../NotificationDetailForm";
-import ArticleDetailForm from "../ArticleDetailsForm";
+import NotificationDetailForm from "screens/templates/components/NotificationDetailForm";
+import ArticleDetailForm from "screens/templates/components/ArticleDetailsForm";
+// import { useSelector } from "react-redux";
+// import { IApplicationState } from "store";
+import SelectTemplateForm from "screens/campaigns/components/SelectTemplateForm";
 import { Template } from "interfaces/entity/template";
-import ApprovalRejectionModal from "../ApprovalRejectionModal";
-import StatusTag from "../StatusTag";
-import { useSelector } from "react-redux";
-import { IApplicationState } from "store";
-import { CopyOutlined } from "@ant-design/icons";
-import useArchive from "hooks/useArchive";
+import OtherDetails from "screens/notifications/components/otherDetails";
+import { createNotification } from "interfaces/services/notification";
 
-interface IProps {
-  isPreview?: boolean;
-}
 
-const AddTemplate: FC<IProps> = ({ isPreview }) => {
-  const { id, templateId } = useParams();
-  const [templateDetailForm] = Form.useForm();
+const AddCampaign = () => {
+  const { id, } = useParams();
+  const [templateSelectionForm] = Form.useForm();
   const [notificationDetailForm] = Form.useForm();
   const [articleDetailForm] = Form.useForm();
-  const role = useSelector((state: IApplicationState) => state?.auth.role);
+  const [otherDetailsForm] = Form.useForm();
+//   const role = useSelector((state: IApplicationState) => state?.auth.role);
 
   const navigate = useNavigate();
 
@@ -51,8 +46,6 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
   const [fetching, setFetching] = useState<boolean>(false);
 
   const screens = Grid.useBreakpoint();
-
-  const templateName = Form.useWatch("templateName", templateDetailForm);
 
   const notificationTitle = Form.useWatch(
     "notificationTitle",
@@ -71,23 +64,22 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
     notificationDetailForm
   );
 
-  const notificationDeeplink = Form.useWatch(
-    "notificationDeeplink",
-    notificationDetailForm
-  );
-
   const articleTitle = Form.useWatch("articleTitle", articleDetailForm);
   const articleDescription = Form.useWatch(
     "articleDescription",
     articleDetailForm
   );
 
+  const eventId = Form.useWatch("eventId", templateSelectionForm);
+
   const fetchTemplate = async () => {
-    if (!templateId) return;
+    if (!eventId) return;
     setFetching(true);
-    const { data } = await fetchTemplateByTemplateId(templateId || "");
-    setRecord(data.data);
-    templateDetailForm.setFieldsValue(data);
+    const { data, error } = await fetchTemplateByEventId(eventId || "");
+    if(error){
+      notification.error({message: "failed to fetch template!"})
+    }
+    setRecord(data?.data);
     notificationDetailForm.setFieldsValue(data);
     articleDetailForm.setFieldsValue(data);
     setCurrentStep(0);
@@ -97,25 +89,26 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
 
   useEffect(() => {
     fetchTemplate();
-  }, [templateId]);
-
-  const {ArchiveButton} = useArchive({ allowToggle: true, onDone: ()=>{fetchTemplate()}})
+  }, [eventId]);
 
 
   const steps = [
     {
-      title: "Step 1",
-      Component: TemplateDetailForm,
-      description: "Template Details",
-      summary: "Setup your notification template",
-      form: templateDetailForm,
+        title: "Step 1",
+        Component: SelectTemplateForm,
+        description: "Select template",
+        summary: "Select template to create notification",
+        form: templateSelectionForm,
     },
     {
       title: "Step 2",
       Component: NotificationDetailForm,
       description: "Notification Details",
       summary: "Define what user will see in notification",
-      form: notificationDetailForm
+      form: notificationDetailForm,
+      props: {
+        isPreview: true,
+      }
     },
     {
       title: "Step 3",
@@ -123,63 +116,56 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
       description: "PLEMbox Details",
       summary: "Define what user will see in PLEMbox",
       form: articleDetailForm,
-      CopyFrom: (
-        <>
-            <Button
-              size="small"
-              type="link"
-              icon={<CopyOutlined />}
-              className="mx-2"
-              onClick={() => {
-                articleDetailForm.setFieldsValue({
-                  articleTitle: notificationTitle,
-                  articleDescription: notificationDescription,
-                  articleImageUrl: notificationImageUrl,
-                  articleDeeplink:
-                    "/" + (notificationDeeplink || "").split("/").pop(),
-                  articleDeeplinkType: "deeplink",
-                });
-                setRerenderKey((p) => p + 1);
-              }}
-            >
-                Paste Notification Details
-            </Button>
-        </>
-      ),
+      props: {
+        isPreview: true,
+        createNotification: true,
+      },
     },
+    {
+      title: "Step 4",
+      Component: OtherDetails,
+      description: "Delivery Options",
+      summary: "Configure when and how notifications will be delivered",
+      form: otherDetailsForm,
+    }
   ];
 
   const onSubmit = async (payload: Record<string, any>) => {
     setSubmitting(true);
-    const { error } = await createTemplate({
+    const { error } = await createNotification({
       ...payload,
-      notificationMedium: "Push",
-      categoryId: 1,
     });
     setSubmitting(false);
     if (!error) {
-      notification.success({ message: "Template Created" });
+      notification.success({ message: "Campaign Created" });
       navigate(-1);
     } else {
       notification.error({ message: "Something went wrong!" });
     }
   };
 
-  const onSubmitButton = async () => {
-    if (isPreview) {
-      //
-    } else {
+  const onSubmitButton = async (published?: boolean) => {
+    // if (isPreview) {
+    //   //
+    // } else {
       steps[currentStep]?.form
         .validateFields()
-        .then(async (values) => {
-         const validateTemplate = await templateDetailForm.validateFields();
+        .then(async () => {
+         const validateTemplate = await templateSelectionForm.validateFields();
          const validateNotification = await notificationDetailForm.validateFields();
             if(validateTemplate && validateNotification){
-                setRecord((p) => ({ ...p, ...values }));
+                const targetAudienceType = otherDetailsForm.getFieldValue("targetAudienceType");
                 onSubmit({
-                  ...record,
-                  ...steps[currentStep]?.form.getFieldsValue(),
-                });
+                  campaignName: templateSelectionForm?.getFieldValue("campaignName"),
+                  eventId: templateSelectionForm?.getFieldValue("eventId"),
+                  notificationMedium: templateSelectionForm?.getFieldValue("notificationMedium"),
+                  scheduleTime: otherDetailsForm.getFieldValue("scheduleTime"),
+                  targetAudienceType: otherDetailsForm.getFieldValue("targetAudienceType"),
+                  published,
+                  ...(targetAudienceType === 'SPECIFIC_USERS' && {targetAudience: otherDetailsForm.getFieldValue("targetAudience")}),
+                  ...(targetAudienceType === 'UPLOAD' && {csvUrl: otherDetailsForm.getFieldValue("csvUrl")}),
+                  ...(targetAudienceType === 'SEGMENT' && {segmentName: otherDetailsForm.getFieldValue("segmentName")}),
+                  });
             }
          })
         .catch((err) => {
@@ -188,23 +174,18 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
             }
             console.log(err, "error");
         });
-    }
+    // }
   };
 
   const onNext = () => {
-    if (isPreview) {
-      setCurrentStep((p) => p + 1);
-    } else {
       steps[currentStep]?.form
         .validateFields()
-        .then((values) => {
-          setRecord((p) => ({ ...p, ...values }));
+        .then(() => {
           setCurrentStep((p) => p + 1);
         })
         .catch((err) => {
           console.log(err, "error");
         });
-    }
   };
 
   return (
@@ -213,22 +194,18 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
         <Col>
           <div className="row align-center">
             <Typography.Title level={3} className="my-4 text-left">
-              {isPreview
-                ? "Review template"
-                : `${id ? "Edit" : "Create"} Template`}
+              {`${id ? "Edit" : "Create"} Campaign`}
             </Typography.Title>
             <div className="mt-2 ml-2">
-              {record && isPreview && <StatusTag status={record.status} />}
-              {record && isPreview && (ArchiveButton(record))}
+              {/* {record && isPreview && record.status &&<StatusTag status={record.status} />} */}
             </div>
           </div>
           <Typography.Paragraph>
-            Design your notifcation templates and PLEMbox content
+            Design your notifcation campaign and PLEMbox content
           </Typography.Paragraph>
         </Col>
       </Row>
       <br />
-      {isPreview ? null : (
         <Row>
           <Col sm={16}>
             <Steps
@@ -242,7 +219,6 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
             />
           </Col>
         </Row>
-      )}
       <br />
       <Row gutter={24}>
         <Col md={screens?.md ? 16 : 24}>
@@ -252,13 +228,13 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                 key={"form_" + index}
                 style={{
                   display:
-                    currentStep === index || isPreview ? "block" : "none",
+                    currentStep === index ? "block" : "none",
                 }}
               >
                 {Item?.Component ? (
                   <>
                     <Card style={{ textAlign: "left" }} className="mb-3">
-                      {isPreview || currentStep === index ? (
+                      {currentStep === index ? (
                         <>
                           <Card.Meta
                             title={
@@ -266,7 +242,6 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                                 <Typography.Title level={5} className="mb-0">
                                   {Item.description}
                                 </Typography.Title>
-                                {Item.CopyFrom}
                               </div>
                             }
                             description={steps[index]?.summary}
@@ -275,9 +250,9 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                         </>
                       ) : null}
                       <Item.Component
-                        isPreview={isPreview}
                         form={Item.form}
                         currentRecord={record}
+                        {...(Item.props ||{})}
                       />
                     </Card>
                   </>
@@ -285,13 +260,6 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
               </div>
             ))}
           </div>
-          {isPreview ? (
-            <>
-              {record && role?.admin && (
-                <ApprovalRejectionModal template={record} />
-              )}
-            </>
-          ) : (
             <div
               className="my-3"
               style={{ display: "flex", flexDirection: "row" }}
@@ -308,16 +276,28 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                 </Button>
               ) : null}
               {currentStep === steps.length - 1 ? (
+                <>
                 <Button
                   disabled={submitting}
                   loading={submitting}
                   className="mr-2"
                   type="primary"
                   style={{ minWidth: "150px" }}
-                  onClick={onSubmitButton}
+                  onClick={()=>onSubmitButton(true)}
                 >
-                  Submit
+                  Create Campaign
                 </Button>
+                <Button
+                  disabled={submitting}
+                  loading={submitting}
+                  className="mr-2"
+                  type="dashed"
+                  style={{ minWidth: "150px" }}
+                  onClick={()=>onSubmitButton()}
+                >
+                  Save as Draft
+                </Button>
+                </>
               ) : null}
 
               {currentStep !== 0 ? (
@@ -334,7 +314,6 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                 </Button>
               ) : null}
             </div>
-          )}
         </Col>
         <Col md={screens?.md ? 8 : 24}>
         <Affix offsetTop={20}>
@@ -351,7 +330,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
               </div>
             )}
 
-            {(currentStep === 1 || currentStep === 2 || isPreview) && (
+            {(currentStep === 1 || currentStep === 2 || currentStep === 3) && (
               <PreviewNotificationCard
                 title={notificationTitle}
                 desc={notificationDescription}
@@ -360,12 +339,12 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
               />
             )}
             <br />
-            {(currentStep === 0 || currentStep === 2) && (
+            {(currentStep === 0 || currentStep === 2 || currentStep === 3) && (
               <CheckListCard
                 list={[
                   {
-                    text: "Template name",
-                    checked: templateName,
+                    text: "Template Selected",
+                    checked: record?.templateName,
                   },
                   {
                     text: "Notification content defined",
@@ -376,7 +355,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                     checked: articleTitle && articleDescription,
                   },
                 ]}
-                title={"Template Checklist"}
+                title={"Campaign Checklist"}
               />
             )}
           </Card>
@@ -387,4 +366,4 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
   );
 };
 
-export default AddTemplate;
+export default AddCampaign;

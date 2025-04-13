@@ -6,13 +6,13 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 
-const items = [
+const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
   {
     key: 'pending',
     label: (
       <span>
         <LineChartOutlined style={{ marginRight: 6 }} />
-        Approval Pending <Badge count={2} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
+        Approval Pending <Badge count={statusCounts?.PENDING || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
   },
@@ -21,7 +21,7 @@ const items = [
     label: (
       <span>
         <CalendarOutlined style={{ marginRight: 6 }} />
-        Approved <Badge count={2} showZero style={{ marginLeft: 6, backgroundColor: '#b7eb8f' }} />
+        Approved <Badge count={statusCounts?.APPROVED || 0} showZero style={{ marginLeft: 6, backgroundColor: '#b7eb8f' }} />
       </span>
     ),
   },
@@ -30,7 +30,16 @@ const items = [
     label: (
       <span>
         <DeleteOutlined style={{ marginRight: 6 }} />
-        Rejected <Badge count={2} showZero style={{ marginLeft: 6, backgroundColor: '#ffa39e' }} />
+        Rejected <Badge count={statusCounts?.REJECTED} showZero style={{ marginLeft: 6, backgroundColor: '#ffa39e' }} />
+      </span>
+    ),
+  },
+  {
+    key: 'archive',
+    label: (
+      <span>
+        <DeleteOutlined style={{ marginRight: 6 }} />
+        Archived
       </span>
     ),
   },
@@ -39,16 +48,17 @@ const items = [
 interface IProps {
   activeKey?: string,
   onChange?: (key: string) => void
+  statusCounts: Record<string, any>
 }
 
-const TemplateTableTabs: FC<IProps> = ({ activeKey, onChange }) => {
+const TemplateTableTabs: FC<IProps> = ({ activeKey, onChange,statusCounts }) => {
   return (
     <Tabs
       className='modern-tabs'
       size='small'
       activeKey={activeKey}
       onChange={onChange}
-      items={items}
+      items={items({statusCounts})}
       tabBarStyle={{
         paddingLeft: 20,
         margin:0

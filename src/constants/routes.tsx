@@ -1,6 +1,6 @@
 import { Route, InnerRoute } from "interfaces/entity/routes";
 import { lazy } from "react";
-import {LayoutDashboard, Megaphone, BarChart2, Filter, User, Settings} from 'lucide-react';
+import {LayoutDashboard, Megaphone, BarChart2 } from 'lucide-react';
 
 export const MainRoutes:Array<Route> = [
     {
@@ -24,27 +24,27 @@ export const MainRoutes:Array<Route> = [
         icon: <BarChart2 style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
         path: "/templates",
     },
-    {
-        key: "segments",
-        name: "Segments",
-        component: lazy(() => import('screens/comingsoon')),
-        icon: <Filter  style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
-        path: "/segments",
-    },
-    {
-        key: "users",
-        name: "Users",
-        component: lazy(() => import('screens/comingsoon')),
-        icon: <User style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
-        path: "/users",
-    },
-    {
-        key: "settings",
-        name: "Settings",
-        component: lazy(() => import('screens/comingsoon')),
-        icon: <Settings style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
-        path: "/settings",
-    }
+    // {
+    //     key: "segments",
+    //     name: "Segments",
+    //     component: lazy(() => import('screens/comingsoon')),
+    //     icon: <Filter  style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
+    //     path: "/segments",
+    // },
+    // {
+    //     key: "users",
+    //     name: "Users",
+    //     component: lazy(() => import('screens/comingsoon')),
+    //     icon: <User style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
+    //     path: "/users",
+    // },
+    // {
+    //     key: "settings",
+    //     name: "Settings",
+    //     component: lazy(() => import('screens/comingsoon')),
+    //     icon: <Settings style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
+    //     path: "/settings",
+    // }
 ]
 
 export const InnerRoutes:Array<InnerRoute>  = [
@@ -53,6 +53,12 @@ export const InnerRoutes:Array<InnerRoute>  = [
         name: "Create Template",
         component: lazy(() => import('screens/templates/components/AddTemplate')),
         path: "/templates/create",
+    },
+    {
+        key: "create-campaign",
+        name: "Create Campaign",
+        component: lazy(() => import('screens/campaigns/components/AddCampaign')),
+        path: "/campaigns/create",
     },
     {
         key: "view-template",

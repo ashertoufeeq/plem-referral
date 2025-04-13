@@ -32,24 +32,24 @@ const NotificationCampaign:FC<IProps> = ({isCampaign}) => {
   const steps = [
     { 
         title:'Notification Details', 
-        Component: <NotificationDetails form={form}/>,
+        Component: <NotificationDetails form={form} />,
         desc:"These details represent the notifications that will be sent to users."
     },
     {
         title: 'Article Details',
-        Component: <ArticleDetails form={form}/>,
+        Component: <ArticleDetails form={form} />,
         desc: "These details will be show in our app when user clicks the notification."
     },
     ...(isCampaign?[]: [{
         title: 'Other Details',
-        Component: <OtherDetails form={form} isCampaign={isCampaign}/>,
+        Component: <OtherDetails form={form} />,
         desc: "These are other factors depending on which notification will be sent."
     }]),
     ]
  
   const onSubmit = async (payload:Record<string,any>) => {
     setSubmitting(true);
-    const { data,error } = await createNotification({...payload, notificationMedium: 'Push Notification'}, isCampaign);
+    const { data,error } = await createNotification({...payload, notificationMedium: 'Push Notification'});
     console.log(data,'data');
     setSubmitting(false);
     if(!error){

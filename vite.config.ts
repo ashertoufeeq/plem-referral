@@ -37,4 +37,13 @@ export default defineConfig({
       'styles': path.resolve(__dirname, "src/styles"),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://api-stage.plem.in',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      }
+    }
+  }
 });

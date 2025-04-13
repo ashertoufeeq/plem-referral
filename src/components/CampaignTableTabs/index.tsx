@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Tabs, Badge } from 'antd';
+import { Badge, Tabs } from 'antd';
 import {
   LineChartOutlined,
   CalendarOutlined,
@@ -7,22 +7,23 @@ import {
   ArrowDownOutlined,
 } from '@ant-design/icons';
 
-const items = [
+const items =({statusCounts}: {statusCounts?: Record<string,any>}) => [
   {
     key: 'all',
     label: (
       <span>
         <ArrowDownOutlined style={{ marginRight: 6 }} />
-        All <Badge count={6} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
+        All {statusCounts?.all && <Badge count={statusCounts?.all} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />}
       </span>
     ),
   },
   {
-    key: 'active',
+    key: 'pending',
     label: (
       <span>
         <LineChartOutlined style={{ marginRight: 6 }} />
-        Active <Badge count={2} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
+        Pending 
+         <Badge count={statusCounts?.NOTIFICATION_TO_BE_SENT_SOON || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
   },
@@ -31,7 +32,8 @@ const items = [
     label: (
       <span>
         <CalendarOutlined style={{ marginRight: 6 }} />
-        Scheduled <Badge count={2} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
+        Scheduled
+        <Badge count={statusCounts?.NOTIFICATION_REQUEST_SENT || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
   },
@@ -40,7 +42,8 @@ const items = [
     label: (
       <span>
         <DeleteOutlined style={{ marginRight: 6 }} />
-        Drafts <Badge count={2} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
+        Drafts 
+         <Badge count={statusCounts?.NOTIFICATION_DRAFT || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
   },
@@ -48,17 +51,18 @@ const items = [
 
 interface IProps {
   activeKey?: string,
-  onChange?: (key: string) => void
+  onChange?: (key: string) => void;
+  statusWiseCounts?: Record<string, any>;
 }
 
-const CampaignTableTabs: FC<IProps> = ({ activeKey, onChange }) => {
+const CampaignTableTabs: FC<IProps> = ({ activeKey, onChange, statusWiseCounts }) => {
   return (
     <Tabs
       size='small'
       className='modern-tabs'
       activeKey={activeKey}
       onChange={onChange}
-      items={items}
+      items={items({statusCounts: statusWiseCounts})}
       tabBarStyle={{
         paddingLeft: 20
       }}
