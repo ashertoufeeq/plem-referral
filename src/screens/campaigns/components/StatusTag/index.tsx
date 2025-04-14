@@ -11,13 +11,15 @@ const statusColorMap: Record<NotificationStatus, string> = {
     NOTIFICATION_TO_BE_SENT_SOON: 'yellow',
     NOTIFICATION_REQUEST_SENT: 'green',
     NOTIFICATION_SENT_SUCCESSFUL: 'blue',
+    NOTIFICATION_REQUEST_FAILED: "red"
 };
 
 const statusLabelMap: Record<NotificationStatus, string> = {
-    NOTIFICATION_DRAFT: 'Drafts',
-    NOTIFICATION_TO_BE_SENT_SOON: 'Pending',
-    NOTIFICATION_REQUEST_SENT: 'Scheduled',
-    NOTIFICATION_SENT_SUCCESSFUL: 'Sent successfully',
+    NOTIFICATION_DRAFT: 'drafts',
+    NOTIFICATION_TO_BE_SENT_SOON: 'dending',
+    NOTIFICATION_REQUEST_SENT: 'scheduled',
+    NOTIFICATION_SENT_SUCCESSFUL: 'sent successfully',
+    NOTIFICATION_REQUEST_FAILED: 'sailed'
 };
 
 

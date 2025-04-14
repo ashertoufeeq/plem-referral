@@ -12,15 +12,12 @@ import { columns } from "screens/campaigns/columns"
 
 const Campaigns = () => {
     const navigate = useNavigate()
-    const [statusKey, setStatusKey] = useState<NotificationStatus>("NOTIFICATION_DRAFT")
-    
+    const [statusKey, setStatusKey] = useState<NotificationStatus | null>(null)
     const {data: statusWiseCounts, reload:reloadStatusCount} = useAPI<{data: Record<string, any>, statusCode: number, message: string}>('b2b/v1/plembox/external/notifications/counts')
-
-
     const { state, gotoPage, reload, search } = usePaginatedData<any>({
         endpoint: `b2b/v1/plembox/external/notifications`,
         getUrl:(o)=> {
-            return `b2b/v1/plembox/external/notifications?page=${o.page}&size=${o.limit}${o.search?`&search=${o.search}`:''}&status=${statusKey}`
+            return `b2b/v1/plembox/external/notifications?page=${o.page}&size=${o.limit}${o.search?`&search=${o.search}`:''}${statusKey?`&status=${statusKey}`:''}`
         }
     });
       
@@ -28,7 +25,7 @@ const Campaigns = () => {
     
     const finalColumns:Array<ColumnType<PlemBoxNotification>> = [
         {
-            title: "Sr. No.",
+            title: "sr. no.",
             key: "srno",
             render: (_: any, __: any, index: number) =>
             (apiData?.data?.number || 0) * (apiData?.data?.size || 10) + index + 1,
@@ -43,9 +40,9 @@ const Campaigns = () => {
     return <>
         <Row>
             <Col>
-                <Typography.Title level={3} className="my-4 text-left">Campaign</Typography.Title>
+                <Typography.Title level={3} className="my-4 text-left">campaigns</Typography.Title>
                 <Typography.Paragraph>
-                    View, filter and manage your push notification campaigns.
+                    view, filter and manage your push notification campaigns.
                 </Typography.Paragraph>
             </Col>
         </Row>
@@ -57,7 +54,7 @@ const Campaigns = () => {
                 <Button type="primary" icon={<PlusCircleOutlined/>} onClick={()=>{
                     navigate("/campaigns/create")
                 }} style={{width: '100%'}}>
-                    Create Campaign
+                    create campaign
                 </Button>
             </Col>
         </Row>

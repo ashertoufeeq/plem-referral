@@ -24,8 +24,8 @@ const NotificationDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => 
                     max: 50,
                     message: 'title cannot exceed 50 characters',
                 }
-                ]} className="mb-2" label={'Notification Title'} help="keep it short and attention grabbing (50 characters max)" name={'notificationTitle'}>
-                <Input placeholder="E.g., Special Offer Inside"   />
+                ]} className="mb-2" label={'notification title'} help="keep it short and attention grabbing (50 characters max)" name={'notificationTitle'}>
+                <Input placeholder="E.g., special offer inside"   />
             </Form.Item>
             <br/>
             <Form.Item  rules={[
@@ -35,8 +35,8 @@ const NotificationDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => 
                     max: 50,
                     message: 'summary cannot exceed 50 characters',
                 }
-                ]}  className="mb-2" label={'Notification Summary'} help="keep it short and attention grabbing (50 characters max)" name={'notificationSummary'}>
-                        <Input placeholder="E.g., Special Offer Inside"   />
+                ]}  className="mb-2" label={'notification summary'} help="keep it short and attention grabbing (50 characters max)" name={'notificationSummary'}>
+                        <Input placeholder="E.g., special offer inside"   />
             </Form.Item>
             <br/>
             <Form.Item rules={[
@@ -46,15 +46,15 @@ const NotificationDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => 
                     max: 150,
                     message: 'message cannot exceed 150 characters',
                 }
-                ]} label={'Notification Message'} name={'notificationDescription'} help={'The main content of your notification (150 characters max)'}>
-                <Input.TextArea rows={5} placeholder="E.g., Limited time offer: Get 20% of on all the products until midnight!" />
+                ]} label={'notification message'} name={'notificationDescription'} help={'the main content of your notification (150 characters max)'}>
+                <Input.TextArea rows={5} placeholder="E.g., limited time offer: get 20% of on all the products until midnight!" />
             </Form.Item>
             <br/>
-            <Form.Item name='notificationImageUrl' label="Notification Image">
-                <UploadComponent name={"notificationImageUrl"} form={form}/>
+            <Form.Item name='notificationImageUrl' label="notification image">
+                <UploadComponent name={"notificationImageUrl"} form={form} allowedTypes={['image/png', 'image/jpeg', 'image/jpg', 'image/webp']}/>
             </Form.Item>
             <br/>
-            <Form.Item label={'Deep Link Url (optional)'} name={'notificationDeeplink'}>
+            <Form.Item label={'deep link url (optional)'} name={'notificationDeeplink'}>
                 <Select
                     showSearch
                     placeholder="Select"
@@ -65,27 +65,27 @@ const NotificationDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => 
                     options={[
                         {
                             value: DEEPLINK_URL+'/home',
-                            label: 'Home Page'
+                            label: 'home page'
                         },
                         {
                             value: DEEPLINK_URL+'/profile',
-                            label: 'Profile Page'
+                            label: 'profile page'
                         },
                         {
                             value: DEEPLINK_URL+'/catalogue',
-                            label: 'Catalogue Page'
+                            label: 'catalogue page'
                         },
                         {
                             value: DEEPLINK_URL+'/support',
-                            label: 'Support Page'
+                            label: 'support page'
                         },
                         {
                             value: DEEPLINK_URL+'/loyalty',
-                            label: 'Loyalty Page'
+                            label: 'loyalty page'
                         },                    
                         {
                             value: DEEPLINK_URL+'/refer',
-                            label: 'Refer Page'
+                            label: 'refer page'
                         },
                     ]}
                 />

@@ -39,14 +39,14 @@ const Templates = () => {
 
     const finalColumns: Array<ColumnType<Template>> = [
         {
-            title: "Sr. No.",
+            title: "sr. no.",
             key: "srno",
             render: (_: any, __: any, index: number) =>
             (apiData?.data?.number || 0) * (apiData?.data?.size || 10) + index + 1,
         },
         ...columns,
         {
-            title: "Actions",
+            title: "actions",
             key: "actions",
             render: (_: any, record: Template) => (
               <div className="flex gap-2">
@@ -68,7 +68,7 @@ const Templates = () => {
                       className="cursor-pointer"
                       onClick={() => navigate(`/templates/edit/${record.id}/${record.templateId}`)}
                     >
-                      Edit
+                      edit
                     </Button>
                   }
                   </>}
@@ -76,7 +76,7 @@ const Templates = () => {
             ),
           },
           {
-            title: "Created At",
+            title: "created at",
             dataIndex: "createdAt",
             key: "createdAt",
             render: (data) => (
@@ -92,21 +92,21 @@ const Templates = () => {
     return <>
         <Row>
             <Col>
-                <Typography.Title level={3} className="my-4 text-left">Templates</Typography.Title>
+                <Typography.Title level={3} className="my-4 text-left">templates</Typography.Title>
                 <Typography.Paragraph>
-                    View, filter and manage your notifcation templates.
+                    view, filter and manage your notifcation templates.
                 </Typography.Paragraph>
             </Col>
         </Row>
         <Row justify={"space-between"}>
             <Col md={6} className="flex justify-center">
-                <Input size="middle" placeholder="Search Template" prefix={<SearchOutlined />} onChange={(e)=>{
+                <Input size="middle" placeholder="search template" prefix={<SearchOutlined />} onChange={(e)=>{
                     search(e.target.value)
                 }} style={{backgroundColor: theme.background}}/>
             </Col>
             <Col md={4} className="row justify-end">
                 <Button type="primary" icon={<PlusCircleOutlined/>} onClick={()=>navigate('/templates/create')}>
-                    Create Template
+                    create template
                 </Button>
             </Col>
         </Row>

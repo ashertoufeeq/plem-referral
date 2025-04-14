@@ -24,7 +24,7 @@ const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
       disabled={isPreview}
     >
       <Form.Item
-        label={"Campaign Name"}
+        label={"campaign name"}
         name={"campaignName"}
         rules={[
           {
@@ -38,14 +38,14 @@ const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
           },
           {
             pattern: /^[a-z0-9_]+$/,
-            message: "Only lowercase letters and underscores are allowed",
+            message: "only lowercase letters and underscores are allowed",
           }
         ]}
       >
         <Input placeholder="E.g., special_offer_inside" maxLength={50} />
       </Form.Item>
       <Form.Item
-        label={"Select Templates"}
+        label={"select templates"}
         name={"eventId"}
         rules={[
           {
@@ -95,7 +95,7 @@ const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
         />
       </Form.Item>
       <Form.Item
-        label={"Notification Medium"}
+        label={"notification medium"}
         name={"notificationMedium"}
         rules={[
           {
@@ -112,8 +112,8 @@ const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
             console.log(s, "search");
           }}
           options={[
-            { label: "Push", value: "PUSH" },
-            { label: "IN APP", value: "IN_APP" },
+            { label: "push", value: "PUSH" },
+            { label: "in app", value: "IN_APP" },
           ]}
         />
       </Form.Item>

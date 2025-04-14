@@ -28,24 +28,24 @@ const ApprovalRejectionModal: FC<IProps> = ({ template }) => {
     setLoading(true);
     const { error } = await approveTemplate({ id: template.id });
     if (error) {
-      notification.error({ message: "Error while approving template" });
+      notification.error({ message: "error while approving template" });
       setLoading(false);
       return;
     }
     setLoading(false);
-    notification.success({ message: "Template approved successfully" });
+    notification.success({ message: "template approved successfully" });
     navigate("/templates");
   }
 
   const onRejection = async (values: Record<string,any>) => {
     const {error} = await rejectTemplate({id:template.id, rejectionReason:values.reason});
     if(error){
-        notification.error({message: "Error while rejecting template"})
+        notification.error({message: "error while rejecting template"})
         setLoading(false);
         return;
     }
     setLoading(false);
-    notification.success({message: "Template rejected successfully"})
+    notification.success({message: "template rejected successfully"})
     navigate('/templates');
 }
 
@@ -75,7 +75,7 @@ const ApprovalRejectionModal: FC<IProps> = ({ template }) => {
                             handleOpen()
                         }}
                     >
-                        Approve
+                        approve
                     </Button>
                     <Button
                         danger
@@ -89,7 +89,7 @@ const ApprovalRejectionModal: FC<IProps> = ({ template }) => {
                         }}
                         style={{ minWidth: "150px" }}
                     >
-                        Reject
+                        reject
                     </Button>
                 </div>
             {isOpen &&
@@ -101,7 +101,7 @@ const ApprovalRejectionModal: FC<IProps> = ({ template }) => {
             onOk={handleOk}
             onCancel={handleClose}
             >
-            {action==='approve'? <p>Are you sure you want to {action} this template?</p>:null}
+            {action==='approve'? <p>are you sure you want to {action} this template?</p>:null}
             {action === "reject" && (
                 <div>
                     <Form
@@ -113,11 +113,11 @@ const ApprovalRejectionModal: FC<IProps> = ({ template }) => {
                         }}
                     >   
                     <Form.Item
-                        label="Rejection Reason"
+                        label="rejection reason"
                         name="reason"
-                        rules={[{ required: true, message: "Please provide a reason for rejection" }]}
+                        rules={[{ required: true, message: "please provide a reason for rejection" }]}
                     >
-                        <Input.TextArea placeholder="Enter reason" />
+                        <Input.TextArea placeholder="enter reason" />
                     </Form.Item>
                 </Form>
                 </div>)

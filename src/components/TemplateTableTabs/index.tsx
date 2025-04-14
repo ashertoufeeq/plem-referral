@@ -8,20 +8,20 @@ import {
 
 const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
   {
-    key: 'pending',
-    label: (
-      <span>
-        <LineChartOutlined style={{ marginRight: 6 }} />
-        Approval Pending <Badge count={statusCounts?.PENDING || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
-      </span>
-    ),
-  },
-  {
     key: 'approved',
     label: (
       <span>
         <CalendarOutlined style={{ marginRight: 6 }} />
-        Approved <Badge count={statusCounts?.APPROVED || 0} showZero style={{ marginLeft: 6, backgroundColor: '#b7eb8f' }} />
+        approved <Badge count={statusCounts?.APPROVED || 0} showZero style={{ marginLeft: 6, backgroundColor: '#b7eb8f' }} />
+      </span>
+    ),
+  }, 
+  {
+    key: 'pending',
+    label: (
+      <span>
+        <LineChartOutlined style={{ marginRight: 6 }} />
+        approval pending <Badge count={statusCounts?.PENDING || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
   },
@@ -30,7 +30,7 @@ const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
     label: (
       <span>
         <DeleteOutlined style={{ marginRight: 6 }} />
-        Rejected <Badge count={statusCounts?.REJECTED} showZero style={{ marginLeft: 6, backgroundColor: '#ffa39e' }} />
+        rejected <Badge count={statusCounts?.REJECTED} showZero style={{ marginLeft: 6, backgroundColor: '#ffa39e' }} />
       </span>
     ),
   },
@@ -39,7 +39,7 @@ const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
     label: (
       <span>
         <DeleteOutlined style={{ marginRight: 6 }} />
-        Archived
+        archived
       </span>
     ),
   },

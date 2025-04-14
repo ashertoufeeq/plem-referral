@@ -5,17 +5,17 @@ import StatusTag from "./components/StatusTag";
 
 export const columns:Array<ColumnType<Template>> = [
     {
-      title: "Template ID",
+      title: "template id",
       dataIndex: "templateId",
       key: "templateId",
     },
     {
-      title: "Template Name",
+      title: "template name",
       dataIndex: "templateName",
       key: "templateName",
     },
     {
-      title: "Notification Title",
+      title: "notification title",
       dataIndex: "notificationTitle",
       key: "notificationTitle",
       render: (text) => (
@@ -27,7 +27,7 @@ export const columns:Array<ColumnType<Template>> = [
       )
     },
     {
-      title: "PLEMbox Title",
+      title: "PLEMbox title",
       dataIndex: "articleTitle",
       key: "articleTitle",
       render: (text) => (<div style={{maxWidth: '8vw'}}>
@@ -38,7 +38,7 @@ export const columns:Array<ColumnType<Template>> = [
       )
     },
     {
-      title: "Status",
+      title: "status",
       dataIndex: "status",
       key: "status",
       render: (data) => <StatusTag status={data} />,

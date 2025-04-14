@@ -25,7 +25,7 @@ import ArticleDetailForm from "screens/templates/components/ArticleDetailsForm";
 // import { IApplicationState } from "store";
 import SelectTemplateForm from "screens/campaigns/components/SelectTemplateForm";
 import { Template } from "interfaces/entity/template";
-import OtherDetails from "screens/notifications/components/otherDetails";
+import OtherDetails from "screens/campaigns/components/otherDetails";
 import { createNotification } from "interfaces/services/notification";
 
 
@@ -35,6 +35,7 @@ const AddCampaign = () => {
   const [notificationDetailForm] = Form.useForm();
   const [articleDetailForm] = Form.useForm();
   const [otherDetailsForm] = Form.useForm();
+  const[publishing, setPublishing] = useState<boolean>(false)
 //   const role = useSelector((state: IApplicationState) => state?.auth.role);
 
   const navigate = useNavigate();
@@ -96,15 +97,15 @@ const AddCampaign = () => {
     {
         title: "Step 1",
         Component: SelectTemplateForm,
-        description: "Select template",
-        summary: "Select template to create notification",
+        description: "select template",
+        summary: "select template to create notification",
         form: templateSelectionForm,
     },
     {
       title: "Step 2",
       Component: NotificationDetailForm,
-      description: "Notification Details",
-      summary: "Define what user will see in notification",
+      description: "notification details",
+      summary: "define what user will see in notification",
       form: notificationDetailForm,
       props: {
         isPreview: true,
@@ -113,8 +114,8 @@ const AddCampaign = () => {
     {
       title: "Step 3",
       Component: ArticleDetailForm,
-      description: "PLEMbox Details",
-      summary: "Define what user will see in PLEMbox",
+      description: "PLEMbox details",
+      summary: "define what user will see in PLEMbox",
       form: articleDetailForm,
       props: {
         isPreview: true,
@@ -124,8 +125,8 @@ const AddCampaign = () => {
     {
       title: "Step 4",
       Component: OtherDetails,
-      description: "Delivery Options",
-      summary: "Configure when and how notifications will be delivered",
+      description: "delivery options",
+      summary: "configure when and how notifications will be delivered",
       form: otherDetailsForm,
     }
   ];
@@ -142,12 +143,14 @@ const AddCampaign = () => {
     } else {
       notification.error({ message: "Something went wrong!" });
     }
+    setPublishing(false)
   };
 
   const onSubmitButton = async (published?: boolean) => {
     // if (isPreview) {
     //   //
     // } else {
+      setPublishing(published||false);
       steps[currentStep]?.form
         .validateFields()
         .then(async () => {
@@ -160,11 +163,11 @@ const AddCampaign = () => {
                   eventId: templateSelectionForm?.getFieldValue("eventId"),
                   notificationMedium: templateSelectionForm?.getFieldValue("notificationMedium"),
                   scheduleTime: otherDetailsForm.getFieldValue("scheduleTime"),
-                  targetAudienceType: otherDetailsForm.getFieldValue("targetAudienceType"),
+                  targetAudienceType: targetAudienceType === 'SEGMENT'? "SPECIFIC_USERS":otherDetailsForm.getFieldValue("targetAudienceType"),
                   published,
                   ...(targetAudienceType === 'SPECIFIC_USERS' && {targetAudience: otherDetailsForm.getFieldValue("targetAudience")}),
                   ...(targetAudienceType === 'UPLOAD' && {csvUrl: otherDetailsForm.getFieldValue("csvUrl")}),
-                  ...(targetAudienceType === 'SEGMENT' && {segmentName: otherDetailsForm.getFieldValue("segmentName")}),
+                  ...(targetAudienceType === 'SEGMENT' && {segmentName: otherDetailsForm.getFieldValue("segmentName"),targetAudience: otherDetailsForm.getFieldValue("targetAudience")}),
                   });
             }
          })
@@ -172,6 +175,8 @@ const AddCampaign = () => {
             if((err?.errorFields || []).length>0){
                 notification.error({message: "Please fill all the required fields"})
             }
+            setPublishing(false);
+            setSubmitting(false);
             console.log(err, "error");
         });
     // }
@@ -194,14 +199,14 @@ const AddCampaign = () => {
         <Col>
           <div className="row align-center">
             <Typography.Title level={3} className="my-4 text-left">
-              {`${id ? "Edit" : "Create"} Campaign`}
+              {`${id ? "edit" : "create"} campaign`}
             </Typography.Title>
             <div className="mt-2 ml-2">
               {/* {record && isPreview && record.status &&<StatusTag status={record.status} />} */}
             </div>
           </div>
           <Typography.Paragraph>
-            Design your notifcation campaign and PLEMbox content
+            design your notifcation campaign and PLEMbox content
           </Typography.Paragraph>
         </Col>
       </Row>
@@ -272,30 +277,30 @@ const AddCampaign = () => {
                   type="primary"
                   onClick={onNext}
                 >
-                  Next
+                  next
                 </Button>
               ) : null}
               {currentStep === steps.length - 1 ? (
                 <>
                 <Button
                   disabled={submitting}
-                  loading={submitting}
+                  loading={submitting || publishing}
                   className="mr-2"
                   type="primary"
                   style={{ minWidth: "150px" }}
                   onClick={()=>onSubmitButton(true)}
                 >
-                  Create Campaign
+                  create campaign
                 </Button>
                 <Button
                   disabled={submitting}
-                  loading={submitting}
+                  loading={submitting && !publishing}
                   className="mr-2"
                   type="dashed"
                   style={{ minWidth: "150px" }}
                   onClick={()=>onSubmitButton()}
                 >
-                  Save as Draft
+                  save as draft
                 </Button>
                 </>
               ) : null}
@@ -310,7 +315,7 @@ const AddCampaign = () => {
                   }}
                   style={{ minWidth: "150px" }}
                 >
-                  Previous
+                  previous
                 </Button>
               ) : null}
             </div>
@@ -321,8 +326,8 @@ const AddCampaign = () => {
             {record?.status === "REJECTED" && (
               <div>
                 <Alert
-                  message="Template rejected"
-                  description={record?.rejectReason || "Please contact admin"}
+                  message="template rejected"
+                  description={record?.rejectReason || ""}
                   type="error"
                   showIcon
                 />
@@ -343,19 +348,19 @@ const AddCampaign = () => {
               <CheckListCard
                 list={[
                   {
-                    text: "Template Selected",
+                    text: "template selected",
                     checked: record?.templateName,
                   },
                   {
-                    text: "Notification content defined",
+                    text: "notification content defined",
                     checked: notificationTitle && notificationDescription,
                   },
                   {
-                    text: "Plembox content defined",
+                    text: "PLEMbox content defined",
                     checked: articleTitle && articleDescription,
                   },
                 ]}
-                title={"Campaign Checklist"}
+                title={"campaign checklist"}
               />
             )}
           </Card>

@@ -5,21 +5,21 @@ import {LayoutDashboard, Megaphone, BarChart2 } from 'lucide-react';
 export const MainRoutes:Array<Route> = [
     {
         key: "dashboard",
-        name: "Dashboard",
+        name: "dashboard",
         component: lazy(() => import('screens/comingsoon')),
         icon: <LayoutDashboard style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
         path: "/dashboard",
     },
     {
         key: "campaigns",
-        name: "Campaigns",
+        name: "campaigns",
         component: lazy(() => import('screens/campaigns')),
         icon: <Megaphone style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
         path: "/campaigns",
     },
     {
         key: "templates",
-        name: "Templates",
+        name: "templates",
         component: lazy(() => import('screens/templates')),
         icon: <BarChart2 style={{margin:0, padding:0, marginTop: 8,paddingRight: 5}}/>,
         path: "/templates",
@@ -50,25 +50,25 @@ export const MainRoutes:Array<Route> = [
 export const InnerRoutes:Array<InnerRoute>  = [
     {
         key: "create-template",
-        name: "Create Template",
+        name: "create template",
         component: lazy(() => import('screens/templates/components/AddTemplate')),
         path: "/templates/create",
     },
     {
         key: "create-campaign",
-        name: "Create Campaign",
+        name: "create campaign",
         component: lazy(() => import('screens/campaigns/components/AddCampaign')),
         path: "/campaigns/create",
     },
     {
         key: "view-template",
-        name: "View Template",
+        name: "view template",
         component: lazy(() => import('screens/templates/components/ReviewTemplate')),
         path: "/templates/view/:templateId",
     },
     {
         key: "view-template",
-        name: "View Template",
+        name: "view template",
         component: lazy(() => import('screens/templates/components/AddTemplate')),
         path: "/templates/edit/:id/:templateId",
     },

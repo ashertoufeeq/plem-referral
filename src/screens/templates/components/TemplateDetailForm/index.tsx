@@ -11,8 +11,8 @@ interface IProps {
 const TemplateDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => {
     return (
         <Form form={form} layout="vertical" variant="filled" disabled={isPreview} initialValues={ currentRecord || {notificationMedium:"Push"}}>
-            <Form.Item rules={[{required: true, message: "template name is required"}]} className="mb-2" label={'Template Name'} help="internal name for this template" name={'templateName'}>
-                <Input placeholder="E.g., Holiday Promotion"   />
+            <Form.Item rules={[{required: true, message: "template name is required"}]} className="mb-2" label={'template name'} help="internal name for this template" name={'templateName'}>
+                <Input placeholder="e.g., holiday promotion"   />
             </Form.Item>
             <br/>
             {/* <Form.Item rules={[{required: true, message: "category is required"}]} label={'Template Category'} name={'categoryId'}>
@@ -31,7 +31,7 @@ const TemplateDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => {
                     ]}
                 />
             </Form.Item> */}
-            <Form.Item rules={[{required: true, message: "please select template type is required"}]} label={'Template Type'} name={'type'}>
+            <Form.Item rules={[{required: true, message: "please select template type is required"}]} label={'template type'} name={'type'}>
                 <Select
                     showSearch
                     placeholder="Select"
@@ -41,20 +41,20 @@ const TemplateDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => {
                     }}
                     options={[
                         {
-                            value: 'Transactional',
-                            label: 'Transactional'
+                            value: 'transactional',
+                            label: 'transactional'
                         },
                         {
-                            value: 'Promotional',
-                            label: 'Promotional'
+                            value: 'promotional',
+                            label: 'promotional'
                         } 
                     ]}
                 />
             </Form.Item>
-            <Form.Item rules={[{required: true, message: "please select notification medium is required"}]} label={'Notification Medium'} name={'notificationMedium'}>
+            <Form.Item rules={[{required: true, message: "please select notification medium is required"}]} label={'notification medium'} name={'notificationMedium'}>
                 <Select
                     showSearch
-                    placeholder="Select"
+                    placeholder="select"
                     optionFilterProp="label"
                     filterOption={(input, option) => {
                         return option?.label?.toLowerCase().includes(input.toLowerCase()) || false;
@@ -62,7 +62,7 @@ const TemplateDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => {
                     options={[
                         {
                             value: 'Push',
-                            label: 'Push'
+                            label: 'push'
                         }                      
                     ]}
                 />

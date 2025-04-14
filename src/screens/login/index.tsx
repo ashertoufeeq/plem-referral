@@ -30,7 +30,7 @@ const Login = () => {
               <Col md={8}>
               <Card style={{width:"100%"}}>
                 <div style={{ width :'100%' }}>
-                  <Title level={2}>Login</Title>
+                  <Title level={2}>login</Title>
                  
                   <Form form={form} onFinish={onFinish} layout="vertical">
                     <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter your email" }]}>

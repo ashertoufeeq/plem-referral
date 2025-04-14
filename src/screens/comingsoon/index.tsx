@@ -8,9 +8,9 @@ const ComingSoon: React.FC = () => {
     return(
         <Result
             status="500"
-            title="Coming Soon"
-            subTitle="Sorry, this page is coming soon."
-            extra={<Button type="primary" onClick={()=>{navigate('/')}}>Back Home</Button>}
+            title="coming soon"
+            subTitle="this page is coming soon."
+            extra={<Button type="primary" onClick={()=>{navigate('/')}}>back home</Button>}
         />
 )};
 

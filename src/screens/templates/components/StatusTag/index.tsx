@@ -13,9 +13,9 @@ const statusColorMap: Record<Template['status'], string> = {
 };
 
 const statusLabelMap: Record<Template['status'], string> = {
-  PENDING: 'Approval Pending',
-  APPROVED: 'Approved',
-  REJECTED: 'Rejected',
+  PENDING: 'approval pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
 };
 
 

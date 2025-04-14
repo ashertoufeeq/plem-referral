@@ -69,7 +69,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
               </Menu.Item>
             ))}
               <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutCallback}>
-                {!isCollapsed && "Logout"}
+                {!isCollapsed && "logout"}
               </Menu.Item>
             </Menu>
           </Sider>
@@ -83,7 +83,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
 
         {/* Mobile Sidebar (Drawer) */}
         <Drawer
-          title="Plem box"
+          title="PLEM box"
           placement="left"
           closable
           onClose={() => setMobileMenuVisible(false)}
@@ -98,13 +98,13 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
             selectedKeys={pathName}
           >
             <Menu.Item key="campaigns" icon={<MailOutlined />}>
-              Campaigns
+              campaigns
             </Menu.Item>
             <Menu.Item key="notifications" icon={<BellOutlined />}>
-              Notifications
+              notifications
             </Menu.Item>
             <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutCallback}>
-              Logout
+              logout
             </Menu.Item>
           </Menu>
         </Drawer>

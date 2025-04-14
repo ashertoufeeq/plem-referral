@@ -106,22 +106,22 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
     {
       title: "Step 1",
       Component: TemplateDetailForm,
-      description: "Template Details",
-      summary: "Setup your notification template",
+      description: "template details",
+      summary: "setup your notification template",
       form: templateDetailForm,
     },
     {
       title: "Step 2",
       Component: NotificationDetailForm,
-      description: "Notification Details",
-      summary: "Define what user will see in notification",
+      description: "notification details",
+      summary: "define what user will see in notification",
       form: notificationDetailForm
     },
     {
       title: "Step 3",
       Component: ArticleDetailForm,
-      description: "PLEMbox Details",
-      summary: "Define what user will see in PLEMbox",
+      description: "PLEMbox details",
+      summary: "define what user will see in PLEMbox",
       form: articleDetailForm,
       CopyFrom: (
         <>
@@ -142,7 +142,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                 setRerenderKey((p) => p + 1);
               }}
             >
-                Paste Notification Details
+                paste notification details
             </Button>
         </>
       ),
@@ -158,10 +158,10 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
     });
     setSubmitting(false);
     if (!error) {
-      notification.success({ message: "Template Created" });
+      notification.success({ message: "template created" });
       navigate(-1);
     } else {
-      notification.error({ message: "Something went wrong!" });
+      notification.error({ message: "something went wrong!" });
     }
   };
 
@@ -184,7 +184,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
          })
         .catch((err) => {
             if((err?.errorFields || []).length>0){
-                notification.error({message: "Please fill all the required fields"})
+                notification.error({message: "please fill all the required fields"})
             }
             console.log(err, "error");
         });
@@ -214,8 +214,8 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
           <div className="row align-center">
             <Typography.Title level={3} className="my-4 text-left">
               {isPreview
-                ? "Review template"
-                : `${id ? "Edit" : "Create"} Template`}
+                ? "review template"
+                : `${id ? "edit" : "create"} template`}
             </Typography.Title>
             <div className="mt-2 ml-2">
               {record && isPreview && <StatusTag status={record.status} />}
@@ -223,7 +223,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
             </div>
           </div>
           <Typography.Paragraph>
-            Design your notifcation templates and PLEMbox content
+            design your notifcation templates and PLEMbox content
           </Typography.Paragraph>
         </Col>
       </Row>
@@ -304,7 +304,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                   type="primary"
                   onClick={onNext}
                 >
-                  Next
+                  next
                 </Button>
               ) : null}
               {currentStep === steps.length - 1 ? (
@@ -316,7 +316,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                   style={{ minWidth: "150px" }}
                   onClick={onSubmitButton}
                 >
-                  Submit
+                  submit
                 </Button>
               ) : null}
 
@@ -330,7 +330,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
                   }}
                   style={{ minWidth: "150px" }}
                 >
-                  Previous
+                  previous
                 </Button>
               ) : null}
             </div>
@@ -342,8 +342,8 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
             {record?.status === "REJECTED" && (
               <div>
                 <Alert
-                  message="Template rejected"
-                  description={record?.rejectReason || "Please contact admin"}
+                  message="template rejected"
+                  description={record?.rejectReason || ""}
                   type="error"
                   showIcon
                 />
@@ -364,19 +364,19 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
               <CheckListCard
                 list={[
                   {
-                    text: "Template name",
+                    text: "template name",
                     checked: templateName,
                   },
                   {
-                    text: "Notification content defined",
+                    text: "notification content defined",
                     checked: notificationTitle && notificationDescription,
                   },
                   {
-                    text: "Plembox content defined",
+                    text: "PLEMbox content defined",
                     checked: articleTitle && articleDescription,
                   },
                 ]}
-                title={"Template Checklist"}
+                title={"template checklist"}
               />
             )}
           </Card>

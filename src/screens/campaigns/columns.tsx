@@ -5,12 +5,12 @@ import StatusTag from "screens/campaigns/components/StatusTag";
 
 export const columns:Array<ColumnType<PlemBoxNotification>> = [
     {
-        title: "Campaign Name",
+        title: "campaign name",
         dataIndex: "campaignName",
         key: "campaignName",
     },
     {
-        title: "Campaign ID",
+        title: "campaign id",
         dataIndex: "notificationId",
         key: "notificationId",
     },
@@ -21,7 +21,7 @@ export const columns:Array<ColumnType<PlemBoxNotification>> = [
         render: (data) => <StatusTag status={data} />,
       },
     {
-        title: "Notification Title",
+        title: "notification title",
         dataIndex: "notificationTitle",
         key: "notificationTitle",
         render: (text) => (
@@ -33,7 +33,7 @@ export const columns:Array<ColumnType<PlemBoxNotification>> = [
           )
     },
     {
-        title: "PLEMbox Title",
+        title: "PLEMbox title",
         dataIndex: "articleTitle",
         key: "articleTitle",
         render: (text) => (<div style={{maxWidth: '8vw'}}>

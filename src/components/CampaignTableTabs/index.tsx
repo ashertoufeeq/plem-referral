@@ -13,7 +13,7 @@ const items =({statusCounts}: {statusCounts?: Record<string,any>}) => [
     label: (
       <span>
         <ArrowDownOutlined style={{ marginRight: 6 }} />
-        All {statusCounts?.all && <Badge count={statusCounts?.all} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />}
+        all {statusCounts?.all && <Badge count={statusCounts?.all} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />}
       </span>
     ),
   },
@@ -22,7 +22,7 @@ const items =({statusCounts}: {statusCounts?: Record<string,any>}) => [
     label: (
       <span>
         <LineChartOutlined style={{ marginRight: 6 }} />
-        Pending 
+        pending 
          <Badge count={statusCounts?.NOTIFICATION_TO_BE_SENT_SOON || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
@@ -32,7 +32,7 @@ const items =({statusCounts}: {statusCounts?: Record<string,any>}) => [
     label: (
       <span>
         <CalendarOutlined style={{ marginRight: 6 }} />
-        Scheduled
+        scheduled
         <Badge count={statusCounts?.NOTIFICATION_REQUEST_SENT || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
@@ -42,11 +42,20 @@ const items =({statusCounts}: {statusCounts?: Record<string,any>}) => [
     label: (
       <span>
         <DeleteOutlined style={{ marginRight: 6 }} />
-        Drafts 
+        drafts 
          <Badge count={statusCounts?.NOTIFICATION_DRAFT || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
   },
+  {
+    key: 'failed',
+    label: (
+      <span>
+        <DeleteOutlined style={{ marginRight: 6 }} />
+        failed 
+         <Badge count={statusCounts?.NOTIFICATION_REQUEST_FAILED || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
+      </span>)
+  }
 ];
 
 interface IProps {

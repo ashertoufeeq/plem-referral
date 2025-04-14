@@ -60,19 +60,33 @@ const UploadComponent:FC<IProps> = ({form, name, allowedTypes, limitInMb = 10}) 
 
   return (
     <Upload
+      maxCount={1}
       name="attachment"
       listType="picture-card"
       className="avatar-uploader"
-      showUploadList={false}
+      showUploadList={!['png','jpg', 'jpeg','webp'].includes((imageUrl || '').split('.').pop() ||"")}
       beforeUpload={beforeUpload}
       accept={allowedTypes?allowedTypes.join(",") : "*"}
       customRequest={({ file, onSuccess }) => {
         handleChange({ file });
         setTimeout(() => onSuccess?.("ok"), 0);
       }}
+      onRemove={()=>{
+        setImageUrl(null)
+        form.setFieldValue(name, null);
+      
+      }}
     >
       {imageUrl ? (
-        <img src={imageUrl} alt="attachment" style={{ width: "100%" }} />
+        <>
+          {['png','jpg', 'jpeg'].includes((imageUrl || '').split('.').pop() ||"") ?
+            <img src={imageUrl} alt="attachment" style={{ width: "100%" }} />:
+            <>
+              replace
+            </>
+            }
+        </>
+        
       ) : (
         uploadButton
       )}

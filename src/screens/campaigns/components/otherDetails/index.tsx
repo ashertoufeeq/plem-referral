@@ -1,11 +1,10 @@
-import { Button, DatePicker, Drawer, Form, FormInstance, List, Modal, Select, Switch, Typography } from "antd";
+import { Button, DatePicker, Drawer, Form, FormInstance, List, Select, Typography } from "antd";
 import UploadComponent from "components/upload";
 import { useAPI } from "hooks/useApi";
 import { Segment } from "interfaces/entity/segment";
 import { User } from "interfaces/entity/user";
 import moment from "moment";
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
 import { getFinalStringForSearch } from "utils/string";
 
 interface IProps {
@@ -52,26 +51,103 @@ const OtherDetails: FC<IProps> = ({ form }) => {
           options={[
             {
               value: "ALL",
-              label: "All",
+              label: "all",
             },
             {
               value: "SPECIFIC_USERS",
-              label: "Specifice Users",
+              label: "specific users",
             },
             {
               value: "UPLOAD",
-              label: "Upload",
+              label: "upload",
             },
             {
               value: "SEGMENT",
-              label: "Segment",
+              label: "segment",
             },
           ]}
         />
       </Form.Item>
-      {userSelectionType === "SPECIFIC_USERS" && (
+      {userSelectionType === "SEGMENT" && <Form.Item
+        label={"select segment"}
+        name={"segmentName"}
+        rules={[
+          {
+            required: true,
+            message: "please select segment",
+          },
+        ]}
+      >
+        <Select
+          allowClear
+          showSearch
+          placeholder="Select"
+          optionFilterProp="label"
+          onChange={(value)=>{
+            console.log(value,"value");
+            const currentSegment =  (segmentsRes?.data ||[]).find(item => item.segmentName === value)
+            form.setFieldValue('targetAudience', currentSegment?.targetAudience);
+
+            console.log(form.getFieldsValue())
+          }}
+          filterOption={(input, option: any) => {
+            return (
+              option?.search?.toLowerCase().includes(input.toLowerCase()) ||
+              option?.label?.props?.children?.toString().toLowerCase().includes(input.toLowerCase())
+            );
+          }}
+          options={
+            (segmentsRes?.data || []).map((i: any) => ({
+              value: i.segmentName,
+              search: getFinalStringForSearch(
+                ["segmentName"],
+                i.segmentName,
+                i
+              ),
+              title: (
+                <p
+                  style={{
+                    margin: 0,
+                    padding: 0,
+                    fontSize: 13,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {i.segmentName}
+                </p>
+              ),
+              label: (
+                <>
+                  <b>{i.segmentName}</b>
+                  <br />
+                  <small>
+                    {i.createdAt ? moment(i.createdAt).format('lll') : ""}
+                    {i.targetAudience?.length? " | " + (i.targetAudience.length || 0) + ' Users': ""}
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedSegment(i);
+                        setShowSegmentDetails(true);
+                      }}
+                    >
+                      view segment
+                    </Button>
+                  </small>
+                  
+                </>
+              ),
+            })) as any
+          }
+          labelRender={(p) => <>{(p as any).title}</>}
+        />
+      </Form.Item>}
+
+      {(userSelectionType === "SPECIFIC_USERS" || userSelectionType === 'SEGMENT') && (
         <Form.Item label={"Users"} name={"targetAudience"}>
           <Select
+            disabled={userSelectionType === 'SEGMENT'}
             mode="multiple"
             allowClear
             showSearch
@@ -131,75 +207,6 @@ const OtherDetails: FC<IProps> = ({ form }) => {
         </Form.Item>
       )}
 
-    {userSelectionType === "SEGMENT" && <Form.Item
-        label={"Select Segment"}
-        name={"segmentName"}
-        rules={[
-          {
-            required: true,
-            message: "please select segment",
-          },
-        ]}
-      >
-        <Select
-          allowClear
-          showSearch
-          placeholder="Select"
-          optionFilterProp="label"
-          filterOption={(input, option: any) => {
-            return (
-              option?.search?.toLowerCase().includes(input.toLowerCase()) ||
-              option?.label?.props?.children?.toString().toLowerCase().includes(input.toLowerCase())
-            );
-          }}
-          options={
-            (segmentsRes?.data || []).map((i: any) => ({
-              value: i.id,
-              search: getFinalStringForSearch(
-                ["segmentName"],
-                i.segmentName,
-                i
-              ),
-              title: (
-                <p
-                  style={{
-                    margin: 0,
-                    padding: 0,
-                    fontSize: 13,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {i.segmentName}
-                </p>
-              ),
-              label: (
-                <>
-                  <b>{i.segmentName}</b>
-                  <br />
-                  <small>
-                    {i.createdAt ? moment(i.createdAt).format('lll') : ""}
-                    {i.targetAudience?.length? " | " + (i.targetAudience.length || 0) + ' Users': ""}
-                    <Button
-                      type="link"
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedSegment(i);
-                        setShowSegmentDetails(true);
-                      }}
-                    >
-                      View Segment
-                    </Button>
-                  </small>
-                  
-                </>
-              ),
-            })) as any
-          }
-          labelRender={(p) => <>{(p as any).title}</>}
-        />
-      </Form.Item>}
-
       <Form.Item label={"Schedule"} name={"trigger"}>
         <Select
           showSearch
@@ -211,11 +218,11 @@ const OtherDetails: FC<IProps> = ({ form }) => {
           options={[
             {
               value: "immediate",
-              label: "Immediate",
+              label: "immediate",
             },
             {
               value: "specific_time",
-              label: "Specifice Time",
+              label: "specifice time",
             },
           ]}
         />
@@ -227,7 +234,7 @@ const OtherDetails: FC<IProps> = ({ form }) => {
       )}
     </Form>
       <Drawer
-        title="Segment Details"
+        title="segment details"
         open={showSegmentDetails}
         onClose={() => {
           setShowSegmentDetails(false);

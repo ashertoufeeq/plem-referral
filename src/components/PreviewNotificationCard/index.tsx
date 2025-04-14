@@ -13,7 +13,7 @@ interface IProps {
 const PreviewNotificationCard = ({title, desc, summary, imageUrl}:IProps) => {
   return (
     <>
-      <Title level={5}>Notification Preview</Title>
+      <Title level={5}>notification preview</Title>
       <Card >
       <Row justify={"space-between"} align={'bottom'}>
             <Col span={20}>
@@ -24,8 +24,8 @@ const PreviewNotificationCard = ({title, desc, summary, imageUrl}:IProps) => {
                </div>
                
                 <Card.Meta
-                    title={title || "Your notification title"}
-                    description={ desc ||"Your notification description"}
+                    title={title || "your notification title"}
+                    description={ desc ||"your notification description"}
                 />
             </div>
             </Col>
