@@ -48,7 +48,7 @@ const Campaigns = () => {
         </Row>
         <Row justify={"space-between"}>
             <Col md={6} className="flex justify-center">
-                <Input onChange={(e)=>search(e?.target?.value)} size="middle" placeholder="Search Template" prefix={<SearchOutlined />}  style={{backgroundColor: theme.background}}/>
+                <Input onChange={(e)=>search(e?.target?.value)} size="middle" placeholder="search campaign" prefix={<SearchOutlined />}  style={{backgroundColor: theme.background}}/>
             </Col>
             <Col md={4} className="flex justify-center">
                 <Button type="primary" icon={<PlusCircleOutlined/>} onClick={()=>{
@@ -70,7 +70,8 @@ const Campaigns = () => {
                         size="small"
                         onRow={(r)=>({
                             onClick: ()=>{
-                                console.log(r,'row')
+                                console.log(r,'row');
+                                navigate(`/campaigns/edit/${r.id}`)
                             }
                         })}
                         scroll={{x: true}}

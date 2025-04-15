@@ -15,7 +15,7 @@ import { columns } from "screens/templates/columns"
 import { IApplicationState } from "store"
 
 const Templates = () => {
-    const [statusKey, setStatusKey] = useState<string>('pending')
+    const [statusKey, setStatusKey] = useState<string>('approved')
     const role = useSelector((state: IApplicationState) => state?.auth?.role);
     const {data: statusWiseCounts, reload:reloadStatusCount} = useAPI<{data: Record<string, any>, statusCode: number, message: string}>('b2b/v1/plembox/external/templates/count')
     const navigate = useNavigate()
@@ -56,7 +56,7 @@ const Templates = () => {
                   <Button
                     size="small"
                     className="cursor-pointer mr-2"
-                    onClick={() => navigate(`/templates/view/${record.templateId}`)}
+                    onClick={() => navigate(`/templates/view/${record.id}`)}
                   >
                     {role?.admin && record.status === 'PENDING'?'Review':'Preview'}
                   </Button>
@@ -66,7 +66,7 @@ const Templates = () => {
                       type="primary"
                       size="small"
                       className="cursor-pointer"
-                      onClick={() => navigate(`/templates/edit/${record.id}/${record.templateId}`)}
+                      onClick={() => navigate(`/templates/edit/${record.id}`)}
                     >
                       edit
                     </Button>
@@ -118,11 +118,6 @@ const Templates = () => {
                     <Table
                         style={{padding: 0, margin: 0 }}
                         size="small"
-                        onRow={(r)=>({
-                            onClick: ()=>{
-                                console.log(r,'row')
-                            }
-                        })}
                         scroll={{x: true}}
                         columns={finalColumns}
                         dataSource={apiData?.data?.content || []}   

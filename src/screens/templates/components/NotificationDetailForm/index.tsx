@@ -39,7 +39,8 @@ const NotificationDetailForm:FC<IProps> = ({form, isPreview, currentRecord}) => 
                         <Input placeholder="E.g., special offer inside"   />
             </Form.Item>
             <br/>
-            <Form.Item rules={[
+            <Form.Item 
+                rules={[
                 {required: true, message: 'please enter notification message'},
                 {
                     type: 'string',

@@ -28,7 +28,7 @@ import ApprovalRejectionModal from "../ApprovalRejectionModal";
 import StatusTag from "../StatusTag";
 import { useSelector } from "react-redux";
 import { IApplicationState } from "store";
-import { CopyOutlined } from "@ant-design/icons";
+import { CopyOutlined, EditOutlined } from "@ant-design/icons";
 import useArchive from "hooks/useArchive";
 
 interface IProps {
@@ -36,7 +36,7 @@ interface IProps {
 }
 
 const AddTemplate: FC<IProps> = ({ isPreview }) => {
-  const { id, templateId } = useParams();
+  const { id } = useParams();
   const [templateDetailForm] = Form.useForm();
   const [notificationDetailForm] = Form.useForm();
   const [articleDetailForm] = Form.useForm();
@@ -83,9 +83,9 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
   );
 
   const fetchTemplate = async () => {
-    if (!templateId) return;
+    if (!id) return;
     setFetching(true);
-    const { data } = await fetchTemplateByTemplateId(templateId || "");
+    const { data } = await fetchTemplateByTemplateId(id || "");
     setRecord(data.data);
     templateDetailForm.setFieldsValue(data);
     notificationDetailForm.setFieldsValue(data);
@@ -97,7 +97,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
 
   useEffect(() => {
     fetchTemplate();
-  }, [templateId]);
+  }, [id]);
 
   const {ArchiveButton} = useArchive({ allowToggle: true, onDone: ()=>{fetchTemplate()}})
 
@@ -125,7 +125,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
       form: articleDetailForm,
       CopyFrom: (
         <>
-            <Button
+            {isPreview?<></>:<Button
               size="small"
               type="link"
               icon={<CopyOutlined />}
@@ -143,7 +143,7 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
               }}
             >
                 paste notification details
-            </Button>
+            </Button>}
         </>
       ),
     },
@@ -155,14 +155,19 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
       ...payload,
       notificationMedium: "Push",
       categoryId: 1,
-    });
+    }, record?.id);
     setSubmitting(false);
+    console.log(error,"erro")
     if (!error) {
       notification.success({ message: "template created" });
       navigate(-1);
     } else {
-      notification.error({ message: "something went wrong!" });
+      notification.error({ 
+        message: error?.message,
+        description: error?.errorData || "something went wrong!" 
+      });
     }
+    navigate('../')
   };
 
   const onSubmitButton = async () => {
@@ -220,6 +225,15 @@ const AddTemplate: FC<IProps> = ({ isPreview }) => {
             <div className="mt-2 ml-2">
               {record && isPreview && <StatusTag status={record.status} />}
               {record && isPreview && (ArchiveButton(record))}
+              {record && isPreview && record?.status === "PENDING" && (<Button 
+                icon={<EditOutlined/>} 
+                size="small" 
+                type="dashed" 
+                onClick={()=>{
+                  navigate(`../templates/edit/${record?.id}`)
+                }}> 
+                Edit
+              </Button>)}
             </div>
           </div>
           <Typography.Paragraph>

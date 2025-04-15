@@ -61,15 +61,21 @@ export const InnerRoutes:Array<InnerRoute>  = [
         path: "/campaigns/create",
     },
     {
+        key: "edit-campaign",
+        name: "edit campaign",
+        component: lazy(() => import('screens/campaigns/components/AddCampaign')),
+        path: "/campaigns/edit/:id",
+    },
+    {
         key: "view-template",
         name: "view template",
         component: lazy(() => import('screens/templates/components/ReviewTemplate')),
-        path: "/templates/view/:templateId",
+        path: "/templates/view/:id",
     },
     {
         key: "view-template",
         name: "view template",
         component: lazy(() => import('screens/templates/components/AddTemplate')),
-        path: "/templates/edit/:id/:templateId",
+        path: "/templates/edit/:id/",
     },
 ]

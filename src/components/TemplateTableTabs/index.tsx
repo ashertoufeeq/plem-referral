@@ -1,17 +1,13 @@
 import { FC } from 'react';
 import { Tabs, Badge } from 'antd';
-import {
-  LineChartOutlined,
-  CalendarOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons';
+import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, InboxOutlined } from '@ant-design/icons';
 
 const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
   {
     key: 'approved',
     label: (
       <span>
-        <CalendarOutlined style={{ marginRight: 6 }} />
+        <CheckCircleOutlined style={{ marginRight: 6 }}/>
         approved <Badge count={statusCounts?.APPROVED || 0} showZero style={{ marginLeft: 6, backgroundColor: '#b7eb8f' }} />
       </span>
     ),
@@ -20,7 +16,7 @@ const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
     key: 'pending',
     label: (
       <span>
-        <LineChartOutlined style={{ marginRight: 6 }} />
+        <ClockCircleOutlined style={{ marginRight: 6 }} />
         approval pending <Badge count={statusCounts?.PENDING || 0} showZero style={{ marginLeft: 6, backgroundColor: '#d9d9d9' }} />
       </span>
     ),
@@ -29,7 +25,7 @@ const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
     key: 'rejected',
     label: (
       <span>
-        <DeleteOutlined style={{ marginRight: 6 }} />
+        <CloseCircleOutlined style={{ marginRight: 6 }} />
         rejected <Badge count={statusCounts?.REJECTED} showZero style={{ marginLeft: 6, backgroundColor: '#ffa39e' }} />
       </span>
     ),
@@ -38,7 +34,7 @@ const items = ({statusCounts}: {statusCounts: Record<string,any>}) => [
     key: 'archive',
     label: (
       <span>
-        <DeleteOutlined style={{ marginRight: 6 }} />
+        <InboxOutlined style={{ marginRight: 6 }} />
         archived
       </span>
     ),

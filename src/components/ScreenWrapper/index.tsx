@@ -1,5 +1,5 @@
 import { BellOutlined, LogoutOutlined, MailOutlined, MenuOutlined } from "@ant-design/icons";
-import { Layout, Menu, Space, Button, Drawer, Grid, Divider, Avatar } from "antd";
+import { Layout, Menu, Space, Button, Drawer, Grid, Divider, Avatar, Dropdown } from "antd";
 import logo from "assets/plem_with_name.png";
 import squareLogo from "assets/plem_square.png";
 import { useCallback, useState } from "react";
@@ -30,6 +30,19 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathName = locations?.pathname.split("/");
 
   const user = useSelector((state:IApplicationState) => (state?.auth?.user))
+
+
+  const actionMenu = [
+    {
+      label: 'Logout',
+      key: '1',
+      icon: <LogoutOutlined/>,
+      onClick: ()=>{
+        console.log('called');
+        logoutCallback()
+      }
+    },
+  ]
 
   return (
     <div style={{ minHeight: "100vh"}}>
@@ -68,9 +81,6 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
                 {Route.name}
               </Menu.Item>
             ))}
-              <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutCallback}>
-                {!isCollapsed && "logout"}
-              </Menu.Item>
             </Menu>
           </Sider>
         ) : (
@@ -118,7 +128,18 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
                   {user?.email}
                 </div>
                 <div>
-                  <Avatar/>
+                  <div>
+                    <Dropdown menu={{items: actionMenu }}>
+                      <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                          <Avatar>
+                            {user?.email[0]}
+                            </Avatar>
+                        </Space>
+                      </a>
+                    </Dropdown>
+                  </div>
+
               </div>
               </div>
             </Header>

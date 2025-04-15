@@ -1,5 +1,6 @@
 import { Form, FormInstance, Input, Select } from "antd";
 import { useAPI } from "hooks/useApi";
+import { PlemBoxNotification } from "interfaces/entity/notification";
 import { Template } from "interfaces/entity/template";
 // import UploadComponent from "components/upload";
 // import { DEEPLINK_URL } from "constants/environment";
@@ -10,9 +11,10 @@ interface IProps {
   form: FormInstance;
   isPreview?: boolean;
   currentRecord?: Template | null;
+  currentNotfication?: PlemBoxNotification | null
 }
 
-const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
+const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentNotfication }) => {
   const {data: res} = useAPI<{status: string; message: string; data: Array<Template>}>('b2b/v1/plembox/external/events')
 
   return (
@@ -20,7 +22,7 @@ const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
       form={form}
       layout="vertical"
       variant="filled"
-      initialValues={currentRecord || { notificationMedium: "PUSH" }}
+      initialValues={{ notificationMedium: "PUSH" }}
       disabled={isPreview}
     >
       <Form.Item
@@ -42,7 +44,7 @@ const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
           }
         ]}
       >
-        <Input placeholder="E.g., special_offer_inside" maxLength={50} />
+        <Input disabled={!!currentNotfication?.campaignName} placeholder="E.g., special_offer_inside" maxLength={50} />
       </Form.Item>
       <Form.Item
         label={"select templates"}
@@ -55,6 +57,7 @@ const SelectTemplateForm: FC<IProps> = ({ form, isPreview, currentRecord }) => {
         ]}
       >
         <Select
+          disabled={!!currentNotfication?.eventId} 
           allowClear
           showSearch
           placeholder="Select"

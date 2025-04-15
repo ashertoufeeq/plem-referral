@@ -2,6 +2,7 @@ import { Button, DatePicker, Drawer, Form, FormInstance, List, Select, Typograph
 import UploadComponent from "components/upload";
 import { useAPI } from "hooks/useApi";
 import { Segment } from "interfaces/entity/segment";
+import { Template } from "interfaces/entity/template";
 import { User } from "interfaces/entity/user";
 import moment from "moment";
 import { FC, useState } from "react";
@@ -10,9 +11,10 @@ import { getFinalStringForSearch } from "utils/string";
 interface IProps {
   form: FormInstance;
   isPreview?: boolean;
+  currentRecord?: Template | null
 }
 
-const OtherDetails: FC<IProps> = ({ form }) => {
+const OtherDetails: FC<IProps> = ({ form, isPreview }) => {
   const [selectedSegment, setSelectedSegment] = useState<Segment| null>(null);
   const [showSegmentDetails, setShowSegmentDetails] = useState(false);
   const userSelectionType = Form.useWatch("targetAudienceType", form);
@@ -32,6 +34,7 @@ const OtherDetails: FC<IProps> = ({ form }) => {
   return (
     <>
     <Form
+      disabled={isPreview}
       form={form}
       layout="vertical"
       variant="filled"
@@ -40,14 +43,10 @@ const OtherDetails: FC<IProps> = ({ form }) => {
         trigger: "immediate",
       }}
     >
-      <Form.Item label={"User Selection"} name={"targetAudienceType"}>
+      <Form.Item label={"user selection"} name={"targetAudienceType"}>
         <Select
           showSearch
           placeholder="Select"
-          optionFilterProp="label"
-          onSearch={(s) => {
-            console.log(s, "search");
-          }}
           options={[
             {
               value: "ALL",
@@ -79,6 +78,7 @@ const OtherDetails: FC<IProps> = ({ form }) => {
         ]}
       >
         <Select
+          disabled={isPreview}
           allowClear
           showSearch
           placeholder="Select"
@@ -145,13 +145,13 @@ const OtherDetails: FC<IProps> = ({ form }) => {
       </Form.Item>}
 
       {(userSelectionType === "SPECIFIC_USERS" || userSelectionType === 'SEGMENT') && (
-        <Form.Item label={"Users"} name={"targetAudience"}>
+        <Form.Item label={"users"} name={"targetAudience"}>
           <Select
-            disabled={userSelectionType === 'SEGMENT'}
+            disabled={isPreview || userSelectionType === 'SEGMENT'}
             mode="multiple"
             allowClear
             showSearch
-            placeholder="Select"
+            placeholder="select"
             optionFilterProp="label" 
             filterOption={(input, option: any) => {
               return (
@@ -198,7 +198,7 @@ const OtherDetails: FC<IProps> = ({ form }) => {
       )}
 
       {userSelectionType === "UPLOAD" && (
-        <Form.Item name="csvUrl" label="Users">
+        <Form.Item name="csvUrl" label="users">
           <UploadComponent
             name={"csvUrl"}
             form={form}
@@ -207,7 +207,7 @@ const OtherDetails: FC<IProps> = ({ form }) => {
         </Form.Item>
       )}
 
-      <Form.Item label={"Schedule"} name={"trigger"}>
+      <Form.Item label={"schedule"} name={"trigger"}>
         <Select
           showSearch
           placeholder="Select"
@@ -246,8 +246,8 @@ const OtherDetails: FC<IProps> = ({ form }) => {
               setShowSegmentDetails(false);
             }}
           >
-            Close
-          </Button>,
+            close
+          </Button>
         ]}
         width={440}
       >

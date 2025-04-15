@@ -6,7 +6,8 @@ export type PlemBoxNotification = {
     pushTemplateId?: number;
     smsTemplateId?: number;
     whatsappTemplateId?: number;
-  
+
+    targetAudienceType?: string;
     eventId?: number;
     type?: string;
     campaignName?: string;

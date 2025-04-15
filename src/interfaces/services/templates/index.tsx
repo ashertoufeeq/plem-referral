@@ -1,7 +1,7 @@
 import { loadAPI } from "helpers/api";
 
 
-export const createTemplate = async (body: Record<string,any>, id?: string) => loadAPI(`/b2b/v1/plembox/external/template/${id?'edit/'+id:'create'}`, {
+export const createTemplate = async (body: Record<string,any>, id?: string) => loadAPI(`/b2b/v1/plembox/external/template/${id?'edit':'create'}`, {
   sercure: true,
   data: body,
   method: "POST",

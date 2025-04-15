@@ -16,10 +16,10 @@ const statusColorMap: Record<NotificationStatus, string> = {
 
 const statusLabelMap: Record<NotificationStatus, string> = {
     NOTIFICATION_DRAFT: 'drafts',
-    NOTIFICATION_TO_BE_SENT_SOON: 'dending',
+    NOTIFICATION_TO_BE_SENT_SOON: 'sending',
     NOTIFICATION_REQUEST_SENT: 'scheduled',
     NOTIFICATION_SENT_SUCCESSFUL: 'sent successfully',
-    NOTIFICATION_REQUEST_FAILED: 'sailed'
+    NOTIFICATION_REQUEST_FAILED: 'failed'
 };
 
 

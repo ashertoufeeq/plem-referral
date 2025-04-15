@@ -12,7 +12,7 @@ import {
   Steps,
   Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import {
   fetchTemplateByEventId,
 } from "interfaces/services/templates";
@@ -26,11 +26,13 @@ import ArticleDetailForm from "screens/templates/components/ArticleDetailsForm";
 import SelectTemplateForm from "screens/campaigns/components/SelectTemplateForm";
 import { Template } from "interfaces/entity/template";
 import OtherDetails from "screens/campaigns/components/otherDetails";
-import { createNotification } from "interfaces/services/notification";
+import { createNotification, fetchNotificationById } from "interfaces/services/notification";
+import { PlemBoxNotification } from "interfaces/entity/notification";
 
 
 const AddCampaign = () => {
   const { id, } = useParams();
+  const [currentCampaign, setCurrentCampaign] = useState<PlemBoxNotification | null>(null)
   const [templateSelectionForm] = Form.useForm();
   const [notificationDetailForm] = Form.useForm();
   const [articleDetailForm] = Form.useForm();
@@ -100,6 +102,10 @@ const AddCampaign = () => {
         description: "select template",
         summary: "select template to create notification",
         form: templateSelectionForm,
+        props:{
+          isPreview: !!(currentCampaign && currentCampaign?.status !== 'NOTIFICATION_DRAFT'),
+          currentNotfication: currentCampaign
+        }
     },
     {
       title: "Step 2",
@@ -128,6 +134,9 @@ const AddCampaign = () => {
       description: "delivery options",
       summary: "configure when and how notifications will be delivered",
       form: otherDetailsForm,
+      props: {
+        isPreview: !!(currentCampaign && currentCampaign?.status !== 'NOTIFICATION_DRAFT')
+      }
     }
   ];
 
@@ -135,6 +144,7 @@ const AddCampaign = () => {
     setSubmitting(true);
     const { error } = await createNotification({
       ...payload,
+      ...(currentCampaign?{notificationId: currentCampaign?.notificationId }: {})
     });
     setSubmitting(false);
     if (!error) {
@@ -163,8 +173,8 @@ const AddCampaign = () => {
                   eventId: templateSelectionForm?.getFieldValue("eventId"),
                   notificationMedium: templateSelectionForm?.getFieldValue("notificationMedium"),
                   scheduleTime: otherDetailsForm.getFieldValue("scheduleTime"),
-                  targetAudienceType: targetAudienceType === 'SEGMENT'? "SPECIFIC_USERS":otherDetailsForm.getFieldValue("targetAudienceType"),
-                  published,
+                  targetAudienceType: otherDetailsForm.getFieldValue("targetAudienceType"),
+                  published: !!published,
                   ...(targetAudienceType === 'SPECIFIC_USERS' && {targetAudience: otherDetailsForm.getFieldValue("targetAudience")}),
                   ...(targetAudienceType === 'UPLOAD' && {csvUrl: otherDetailsForm.getFieldValue("csvUrl")}),
                   ...(targetAudienceType === 'SEGMENT' && {segmentName: otherDetailsForm.getFieldValue("segmentName"),targetAudience: otherDetailsForm.getFieldValue("targetAudience")}),
@@ -193,6 +203,42 @@ const AddCampaign = () => {
         });
   };
 
+  const fetchCampaign = async () => {
+    //
+    if(id){
+      setFetching(true);
+      const {data, error} =await fetchNotificationById(id)
+      console.log(data,'data')
+      setFetching(false);
+      
+      if(error){
+        notification.error({message: 'something went wrong'})
+        return;
+      }      
+      const campaign: PlemBoxNotification = data?.data
+      setCurrentCampaign(campaign);
+      const {campaignName,eventId, csvUrl, targetAudience, segmentName, scheduleTime, notificationMedium, targetAudienceType} = campaign || {};
+      
+      templateSelectionForm.setFieldsValue({
+        eventId,
+        campaignName,
+        notificationMedium
+      })
+      
+      otherDetailsForm.setFieldsValue({
+        csvUrl: csvUrl,
+        segmentName,
+        targetAudience: targetAudience?JSON.parse(targetAudience):[],
+        scheduleTime: scheduleTime,
+        trigger: scheduleTime? 'specific_time':'immediate', 
+        targetAudienceType,
+      })
+
+    }
+  }
+
+  useEffect(()=>{fetchCampaign()},[])
+
   return (
     <Spin spinning={fetching} size="large">
       <Row>
@@ -201,9 +247,6 @@ const AddCampaign = () => {
             <Typography.Title level={3} className="my-4 text-left">
               {`${id ? "edit" : "create"} campaign`}
             </Typography.Title>
-            <div className="mt-2 ml-2">
-              {/* {record && isPreview && record.status &&<StatusTag status={record.status} />} */}
-            </div>
           </div>
           <Typography.Paragraph>
             design your notifcation campaign and PLEMbox content
@@ -255,8 +298,8 @@ const AddCampaign = () => {
                         </>
                       ) : null}
                       <Item.Component
-                        form={Item.form}
                         currentRecord={record}
+                        form={Item.form}
                         {...(Item.props ||{})}
                       />
                     </Card>
@@ -269,7 +312,7 @@ const AddCampaign = () => {
               className="my-3"
               style={{ display: "flex", flexDirection: "row" }}
             >
-              {currentStep !== steps.length - 1 ? (
+              {currentStep !== steps.length - 1? (
                 <Button
                   disabled={submitting}
                   className="mr-2"
@@ -280,31 +323,30 @@ const AddCampaign = () => {
                   next
                 </Button>
               ) : null}
-              {currentStep === steps.length - 1 ? (
+              {currentStep === steps.length - 1 && ((currentCampaign && currentCampaign?.status === 'NOTIFICATION_DRAFT') || !currentCampaign ) ? (
                 <>
-                <Button
-                  disabled={submitting}
-                  loading={submitting || publishing}
-                  className="mr-2"
-                  type="primary"
-                  style={{ minWidth: "150px" }}
-                  onClick={()=>onSubmitButton(true)}
-                >
-                  create campaign
-                </Button>
-                <Button
-                  disabled={submitting}
-                  loading={submitting && !publishing}
-                  className="mr-2"
-                  type="dashed"
-                  style={{ minWidth: "150px" }}
-                  onClick={()=>onSubmitButton()}
-                >
-                  save as draft
-                </Button>
+                  <Button
+                    disabled={submitting}
+                    loading={submitting || publishing}
+                    className="mr-2"
+                    type="primary"
+                    style={{ minWidth: "150px" }}
+                    onClick={()=>onSubmitButton(true)}
+                  >
+                    {currentCampaign && currentCampaign?.status !== 'NOTIFICATION_DRAFT'?'create campaign': 'publish'}
+                  </Button>
+                  {currentCampaign && currentCampaign?.status === 'NOTIFICATION_DRAFT' ?<></>: <Button
+                    disabled={submitting}
+                    loading={submitting && !publishing}
+                    className="mr-2"
+                    type="dashed"
+                    style={{ minWidth: "150px" }}
+                    onClick={()=>onSubmitButton()}
+                  >
+                    save as draft
+                  </Button>}
                 </>
               ) : null}
-
               {currentStep !== 0 ? (
                 <Button
                   disabled={submitting}
@@ -334,7 +376,6 @@ const AddCampaign = () => {
                 <br />
               </div>
             )}
-
             {(currentStep === 1 || currentStep === 2 || currentStep === 3) && (
               <PreviewNotificationCard
                 title={notificationTitle}
