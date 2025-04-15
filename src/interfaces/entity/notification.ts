@@ -31,7 +31,7 @@ export type PlemBoxNotification = {
   
     targetAudience?: string;
     partnerId?: number;
-    status?: NotificationStatus;
+    status: NotificationStatus;
     notificationServiceResponse?: string;
   
     messageLength?: number;

@@ -12,7 +12,6 @@ const { Title, Text } = Typography;
 
 const Login = () => {
   const navigate = useNavigate();
-  const [form] = Form.useForm();
   const dispatch = useDispatch<AppDispatch>();
 
   const loginUserCallback = useCallback(

@@ -47,7 +47,6 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <div style={{ minHeight: "100vh"}}>
       <Layout style={{ minHeight: "100vh" }}>
-        {/* Sidebar for large screens */}
         {screens.md ? (
           <Sider
             collapsed={isCollapsed}
@@ -55,13 +54,6 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
             theme="light"
             collapsible
           >
-            {/* <div onClick={() => navigate("/")} className="my-2" style={{ textAlign: "center" }}>
-              <img
-                style={{ height: "35px" }}
-                alt="plem"
-                src={isCollapsed ? squareLogo : logo}
-              />
-            </div> */}
             <Menu
               style={{minHeight: '100%'}}
               onClick={({ key }) => navigate(`/${key}`)}
@@ -86,7 +78,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
         ) : (
           // Mobile menu button
           <div style={{ padding: "10px", backgroundColor: theme.background, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Button type="text" icon={<MenuOutlined style={{color: "#fff"}}/>} onClick={() => setMobileMenuVisible(true)} />
+            <Button type="text" icon={<MenuOutlined/>} onClick={() => setMobileMenuVisible(true)} />
             <img style={{ height: "35px" }} alt="plem" src={squareLogo} onClick={() => navigate("/")} />
           </div>
         )}
@@ -99,6 +91,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
           onClose={() => setMobileMenuVisible(false)}
           open={mobileMenuVisible}
         >
+         
           <Menu
             onClick={({ key }) => {
               navigate(`/${key}`);
@@ -106,20 +99,17 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
             }}
             mode="inline"
             selectedKeys={pathName}
-          >
-            <Menu.Item key="campaigns" icon={<MailOutlined />}>
-              campaigns
-            </Menu.Item>
-            <Menu.Item key="notifications" icon={<BellOutlined />}>
-              notifications
-            </Menu.Item>
+          > 
+            {(MainRoutes || []).map((Route)=>(
+              <Menu.Item key={Route.key} icon={Route.icon}>
+                {Route.name}
+              </Menu.Item>
+            ))}
             <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutCallback}>
               logout
             </Menu.Item>
           </Menu>
         </Drawer>
-
-        {/* Content Area */}
         <Layout>
             <Space direction="vertical" style={{ width: "100%" }}>
             <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: theme.background }}>
@@ -139,7 +129,6 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
                       </a>
                     </Dropdown>
                   </div>
-
               </div>
               </div>
             </Header>
