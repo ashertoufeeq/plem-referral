@@ -1,6 +1,13 @@
 #root {
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
+}
+body{
+  background-color: #f9fafb; /* Matches layout background */
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  /* text-transform: lowercase; */
 }
 
 .padding-0 {
@@ -100,18 +107,18 @@
 }
 
 .mb-1{
-    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .mb-2{
-    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .mb-3{
-    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .mb-4 {
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 .mb-5 {
   margin-bottom: 25px;
@@ -281,4 +288,89 @@
 .px-1 {
   padding-right: 5px;
   padding-left: 5px;
+}
+
+.custom-table-wrapper .ant-table {
+  border-radius: 0px;
+  overflow: hidden;
+  background-color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.custom-table-wrapper .ant-table-thead > tr > th {
+  background: #f9fafb;
+  font-weight: 500;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.custom-table-wrapper .ant-table-tbody > tr > td {
+  color: #1f2937;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.custom-table-wrapper .ant-table-tbody > tr:hover > td {
+  background-color: #f5faff;
+}
+
+.custom-table-wrapper .ant-table-thead > tr > th,
+.custom-table-wrapper .ant-table-tbody > tr > td {
+  font-size: 14px;
+}
+
+.custom-table-wrapper .ant-table-tbody > tr:last-child > td {
+  border-bottom: none;
+}
+/* Tabs container */
+.modern-tabs .ant-tabs-nav {
+  margin: 0;
+  background: transparent;
+  border-bottom: none;
+}
+
+/* Each tab */
+.modern-tabs .ant-tabs-tab {
+  background: transparent;
+  border: none;
+  padding: 4px 10px;
+  margin: 0 6px;
+  color: #6b7280; /* slate-500 */
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+/* Active tab */
+.modern-tabs .ant-tabs-tab-active {
+  color: #111827; /* slate-900 */
+}
+
+/* Underline (ink bar) */
+.modern-tabs .ant-tabs-ink-bar {
+  height: 2px;
+  background-color: #3b82f6; /* blue-500 */
+  border-radius: 2px;
+}
+
+/* Flex container inside tab */
+.tab-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Rounded counter */
+.tab-count {
+  background-color: #f3f4f6; /* gray-100 */
+  color: #4b5563; /* slate-600 */
+  font-size: 12px;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 9999px;
+  line-height: 1.5;
+}
+
+.capitalize-exception {
+  text-transform: none; /* or capitalize, if needed */
 }

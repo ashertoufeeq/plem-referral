@@ -5,7 +5,11 @@ export const uploadFile = async (body: any) => loadAPI("/b2b/v1/upload/external/
   data: body,
   secure: true,
   headers: {
-      "Content-Type": `multipart/form-data  boundary=${Math.random()
-        .toString().substring(0,2)}`,
-    },
+    "Content-Type": "multipart/form-data",
+    "Accept": "*/*",
+  },
 })
+
+//   .catch((err) => {
+//     console.log(err)
+//     return err.response.data

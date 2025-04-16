@@ -52,6 +52,13 @@ export const loadAPI = async (url: string, opts: Record<string, any> = {}) => {
   
   try {
     instance.defaults.headers.common = defaultHeaders;
+    console.log("url", url);
+    console.log("headers",  {
+      ...(secure
+        ? { "token": token }
+        : {}),
+      ...headers,
+    });
     const res = await instance(url, {
       headers: {
         ...(secure

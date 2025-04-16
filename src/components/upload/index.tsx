@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { FormInstance, Upload, message } from "antd";
+import { Form, FormInstance, Upload, message } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { uploadFile } from "interfaces/services/upload";
 
@@ -12,8 +12,8 @@ interface IProps {
 
 const UploadComponent:FC<IProps> = ({form, name, allowedTypes, limitInMb = 10}) => {
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
+  const imageUrl = Form.useWatch(name, form)
   const beforeUpload = (file: File) => {
     console.log(file,'called')
     const allowed = !allowedTypes || allowedTypes.includes(file.type);
@@ -39,7 +39,6 @@ const UploadComponent:FC<IProps> = ({form, name, allowedTypes, limitInMb = 10}) 
         formData.append("file", info.file);
 
         const {data} = await uploadFile(formData);
-        setImageUrl(data.data);
         form.setFieldValue(name, data.data)
         message.success("File uploaded successfully!");
       } catch (error) {
@@ -60,19 +59,32 @@ const UploadComponent:FC<IProps> = ({form, name, allowedTypes, limitInMb = 10}) 
 
   return (
     <Upload
+      maxCount={1}
       name="attachment"
       listType="picture-card"
       className="avatar-uploader"
-      showUploadList={false}
+      showUploadList={!['png','jpg', 'jpeg','webp'].includes((imageUrl || '').split('.').pop() ||"")}
       beforeUpload={beforeUpload}
       accept={allowedTypes?allowedTypes.join(",") : "*"}
       customRequest={({ file, onSuccess }) => {
         handleChange({ file });
         setTimeout(() => onSuccess?.("ok"), 0);
       }}
+      onRemove={()=>{
+        form.setFieldValue(name, null);
+      
+      }}
     >
       {imageUrl ? (
-        <img src={imageUrl} alt="attachment" style={{ width: "100%" }} />
+        <>
+          {['png','jpg', 'jpeg'].includes((imageUrl || '').split('.').pop() ||"") ?
+            <img src={imageUrl} alt="attachment" style={{ width: "100%" }} />:
+            <>
+              replace
+            </>
+            }
+        </>
+        
       ) : (
         uploadButton
       )}

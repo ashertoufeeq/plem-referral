@@ -1,17 +1,21 @@
-import { BellOutlined, LogoutOutlined, MailOutlined, MenuOutlined } from "@ant-design/icons";
-import { Layout, Menu, Space, Button, Drawer, Grid } from "antd";
+import {  LogoutOutlined,  MenuOutlined } from "@ant-design/icons";
+import { Layout, Menu, Space, Button, Drawer, Grid, Divider, Avatar, Dropdown } from "antd";
 import logo from "assets/plem_with_name.png";
 import squareLogo from "assets/plem_square.png";
 import { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "reducers/authSlice";
+import { MainRoutes } from "constants/routes";
+import { Header } from "antd/es/layout/layout";
+import { theme } from "constants/theme";
+import { IApplicationState } from "store";
 
 const { Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [mobileMenuVisible, setMobileMenuVisible] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,57 +29,69 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
 
   const pathName = locations?.pathname.split("/");
 
+  const user = useSelector((state:IApplicationState) => (state?.auth?.user))
+
+
+  const actionMenu = [
+    {
+      label: 'Logout',
+      key: '1',
+      icon: <LogoutOutlined/>,
+      onClick: ()=>{
+        console.log('called');
+        logoutCallback()
+      }
+    },
+  ]
+
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#eee" }}>
+    <div style={{ minHeight: "100vh"}}>
       <Layout style={{ minHeight: "100vh" }}>
-        {/* Sidebar for large screens */}
         {screens.md ? (
           <Sider
             collapsed={isCollapsed}
             onCollapse={() => setIsCollapsed((prev) => !prev)}
-            theme="dark"
+            theme="light"
             collapsible
           >
-            <div onClick={() => navigate("/")} className="my-2" style={{ textAlign: "center" }}>
-              <img
-                style={{ height: "35px" }}
-                alt="plem"
-                src={isCollapsed ? squareLogo : logo}
-              />
-            </div>
             <Menu
+              style={{minHeight: '100%'}}
               onClick={({ key }) => navigate(`/${key}`)}
               mode="inline"
-              theme="dark"
               selectedKeys={pathName}
             >
-              <Menu.Item key="campaigns" icon={<MailOutlined />}>
-                Campaigns
+              <div className="mt-4 row justify-center align-items-center"> 
+                <img
+                  style={{ height: "20px" }}
+                  alt="plem"
+                  src={isCollapsed ? squareLogo : logo}
+                />
+              </div>
+            <Divider/>
+            {(MainRoutes || []).map((Route)=>(
+              <Menu.Item key={Route.key} icon={Route.icon}>
+                {Route.name}
               </Menu.Item>
-              <Menu.Item key="notifications" icon={<BellOutlined />}>
-                Notifications
-              </Menu.Item>
-              <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutCallback}>
-                {!isCollapsed && "Logout"}
-              </Menu.Item>
+            ))}
             </Menu>
           </Sider>
         ) : (
           // Mobile menu button
-          <div style={{ padding: "10px", backgroundColor: "#001529", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Button type="text" icon={<MenuOutlined style={{color: "#fff"}}/>} onClick={() => setMobileMenuVisible(true)} />
+          <div style={{ padding: "10px", backgroundColor: theme.background, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Button type="text" icon={<MenuOutlined/>} onClick={() => setMobileMenuVisible(true)} />
             <img style={{ height: "35px" }} alt="plem" src={squareLogo} onClick={() => navigate("/")} />
           </div>
         )}
 
         {/* Mobile Sidebar (Drawer) */}
         <Drawer
-          title="Plem box"
+          title="PLEM box"
           placement="left"
           closable
           onClose={() => setMobileMenuVisible(false)}
           open={mobileMenuVisible}
         >
+         
           <Menu
             onClick={({ key }) => {
               navigate(`/${key}`);
@@ -83,24 +99,44 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
             }}
             mode="inline"
             selectedKeys={pathName}
-          >
-            <Menu.Item key="campaigns" icon={<MailOutlined />}>
-              Campaigns
-            </Menu.Item>
-            <Menu.Item key="notifications" icon={<BellOutlined />}>
-              Notifications
-            </Menu.Item>
+          > 
+            {(MainRoutes || []).map((Route)=>(
+              <Menu.Item key={Route.key} icon={Route.icon}>
+                {Route.name}
+              </Menu.Item>
+            ))}
             <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutCallback}>
-              Logout
+              logout
             </Menu.Item>
           </Menu>
         </Drawer>
-
-        {/* Content Area */}
         <Layout>
-          <Content style={{ padding: screens.md ? 24 : 12 }}>
             <Space direction="vertical" style={{ width: "100%" }}>
-              <div style={{ padding: screens.md ? "0 20px" : "0 10px" }}>{children}</div>
+            <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: theme.background }}>
+              <div className="row justify-end align-items-center" style={{ width: "100%" }}>
+                <div className="mr-2">
+                  {user?.email}
+                </div>
+                <div>
+                  <div>
+                    <Dropdown menu={{items: actionMenu }}>
+                      <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                          <Avatar>
+                            {user?.email[0]}
+                            </Avatar>
+                        </Space>
+                      </a>
+                    </Dropdown>
+                  </div>
+              </div>
+              </div>
+            </Header>
+            </Space>
+            <Divider style={{margin:0, padding: 0}}/>
+          <Content style={{backgroundColor: theme.background }}>
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <div style={{ padding: screens.md ? "0 20px" : "0 10px", backgroundColor: theme.background }}>{children}</div>
             </Space>
           </Content>
         </Layout>
