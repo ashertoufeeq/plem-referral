@@ -1,4 +1,4 @@
-import { BellOutlined, LogoutOutlined, MailOutlined, MenuOutlined } from "@ant-design/icons";
+import {  LogoutOutlined,  MenuOutlined } from "@ant-design/icons";
 import { Layout, Menu, Space, Button, Drawer, Grid, Divider, Avatar, Dropdown } from "antd";
 import logo from "assets/plem_with_name.png";
 import squareLogo from "assets/plem_square.png";
