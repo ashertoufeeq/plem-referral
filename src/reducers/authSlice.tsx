@@ -10,7 +10,7 @@ export const loginUser = createAsyncThunk('auth/login', async (creds: {email:str
   console.log(apiData,"api data")
   const data:any = apiData || {data: {token: "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IjIiLCJpYXQiOjE3NDI0NTE2ODcsImV4cCI6MTc0NTA0MzY4N30.qKCKjs9wmYPGgjlYNIq4KXT31r9Lnue_5ri73lqpCmo", refresh_token:"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzQyNDUxNjg3LCJleHAiOjE3NTEwOTE2ODd9.0mewKhrpGO4h3ItktZqvDydg7k3_XU5N3W6RnPfUgU4"}};  
   const { data : innerData } = data;
-  if(apiData || (creds.email === 'tech@plem.in' && creds.password === 'Demo@123')){
+  if(apiData){
     localStorage.setItem(ACCESS_TOKEN, innerData?.token);
     localStorage.setItem(REFRESH_TOKEN, innerData?.refresh_token);
     creds.navigate('/')  
