@@ -60,14 +60,15 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
               mode="inline"
               selectedKeys={pathName}
             >
-              <div className="mt-4 row justify-center align-items-center"> 
+              <div className="my-2 row justify-center align-items-center"> 
                 <img
-                  style={{ height: "20px" }}
+                  onClick={()=>{navigate('/')}}
+                  style={{ height: "44px" }}
                   alt="plem"
                   src={isCollapsed ? squareLogo : logo}
                 />
               </div>
-            <Divider/>
+            <Divider style={{margin: 0, padding: 0}}/>
             {(MainRoutes || []).map((Route)=>(
               <Menu.Item key={Route.key} icon={Route.icon}>
                 {Route.name}

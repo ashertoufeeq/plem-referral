@@ -27,7 +27,7 @@ const Login = () => {
 
   return (
     <div
-      style={{ minHeight: "100vh", backgroundColor: "#eee" }}
+      style={{ minHeight: "100vh", backgroundColor: "#fff" }}
     >
       <Row style={{ minHeight: "100vh" }} justify={"center"} align={"middle"}>
         <Col
@@ -39,6 +39,7 @@ const Login = () => {
             alignItems: "center",
             textAlign:'center',
             padding: 24,
+            backgroundColor: "#fff"
           }}
         >
       
@@ -52,7 +53,7 @@ const Login = () => {
               <Title level={2} style={{ marginTop: 10 }}>
                 sign in
               </Title>
-              <Text>
+              <Text type='secondary'>
                 welcome back to PLEM'box! Please enter your details below to
                 sign in.
               </Text>
@@ -68,18 +69,18 @@ const Login = () => {
               <Form.Item
                 label="email"
                 name="email"
-                rules={[{ required: true, message: "Please enter your email" }]}
+                rules={[{ required: true, message: "please enter your email" }]}
               >
-                <Input prefix={<UserOutlined />} type="email" />
+                <Input prefix={<UserOutlined />} type="email" placeholder="e.g. youremail@domain.com"/>
               </Form.Item>
               <Form.Item
                 label="password"
                 name="password"
                 rules={[
-                  { required: true, message: "Please enter your password" },
+                  { required: true, message: "please enter your password" },
                 ]}
               >
-                <Input.Password prefix={<LockOutlined />} />
+                <Input.Password prefix={<LockOutlined />} placeholder="password"/>
               </Form.Item>
               <Form.Item style={{ marginBottom: 10 }}>
                 <div
@@ -105,11 +106,11 @@ const Login = () => {
         </Col>
         <Col xs={0} md={12} style={{height:'100vh', margin: 0, padding:0}}>
           <div>
-          {/* <img
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
-              alt="Building"
+          <img
+              src="https://loyalty-images-upload-test.s3.amazonaws.com/login_page.jpeg"
+              alt="intro"
               style={{ width: "100%", height: "100vh", objectFit: "cover" }}
-            /> */}
+            />
           </div>
         </Col>
       </Row>
