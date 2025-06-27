@@ -2,11 +2,11 @@ import { jwtDecode } from "jwt-decode";
 import axios, { AxiosHeaders } from "axios";
 
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "constants/storage";
-// import { DEFAULT_BASE_URL } from "constants/environment";
+import { DEFAULT_BASE_URL } from "constants/environment";
 
 const instance = axios.create()
 
-// instance.defaults.baseURL = DEFAULT_BASE_URL;
+instance.defaults.baseURL = DEFAULT_BASE_URL;
 instance.defaults.headers.common = {
   token: '',
 }
