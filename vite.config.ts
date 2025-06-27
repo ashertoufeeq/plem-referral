@@ -39,10 +39,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': {
+      '^/(v1|api|b2b)': {
         target: 'https://api-stage.plem.in',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false, // bypass SSL cert issues
       }
     }
   },
