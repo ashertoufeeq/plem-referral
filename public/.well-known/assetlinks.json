@@ -1,0 +1,19 @@
+[
+  {
+    "target": {
+      "package_name": "com.moringa.plem",
+      "sha256_cert_fingerprints": [
+        "60:2A:26:D1:5D:96:A5:82:36:4E:95:9A:A4:EC:0C:2F:4D:A0:97:97:97:A9:73:88:40:7D:82:50:1D:16:AC:5D",
+        "0F:F8:0F:56:15:17:77:5C:0A:CB:18:F0:97:D9:64:54:E5:33:3C:D8:CA:EC:5A:C7:CF:A5:5D:30:3B:8C:6D:CE",
+        "F4:6F:C3:A0:66:71:CB:F1:75:AC:55:46:66:B3:2D:FC:AD:65:13:D4:2C:F5:20:6C:72:63:C0:6C:47:BD:D9:D1",
+        "42:D2:52:CF:26:C1:B6:DC:21:7D:E6:A4:6E:7D:E1:1B:EE:AC:A2:65:C5:7A:76:CC:08:AE:57:3D:9B:72:DC:F5",
+        "CA:4A:3F:58:BF:CA:EB:4A:E3:CA:AB:D8:59:75:70:5A:F6:2F:8B:1C:01:72:57:C6:62:3B:3F:4D:9B:1B:75:7D"
+      ],
+      "namespace": "android_app"
+    },
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ]
+  }
+]
+

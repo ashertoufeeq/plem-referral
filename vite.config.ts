@@ -38,6 +38,10 @@ export default defineConfig({
     },
   },
   server: {
+    fs: {
+      allow: ['public/.well-known'], // optional: make sure it's accessible during dev
+    },
+    allowedHosts:["61ba-103-252-216-125.ngrok-free.app"],
     proxy: {
       '^/(v1|api|b2b)': {
         target: 'https://api-stage.plem.in',
