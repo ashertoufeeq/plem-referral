@@ -5,8 +5,8 @@ const IOS_APP_STORE_LINK = "https://apps.apple.com/app/id6739004329"; // Replace
 const FALLBACK_PLAY_STORE = `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`;
 
 export default function DynamicAppRedirect() {
-  const isAndroid = /android/i.test(window.navigator.userAgent || window.navigator.vendor);
   useEffect(() => {
+    const isAndroid = /android/i.test(window.navigator.userAgent || window.navigator.vendor);
     const fallbackUrl = isAndroid ? FALLBACK_PLAY_STORE : IOS_APP_STORE_LINK;
 
     const timer = setTimeout(() => {
@@ -19,7 +19,7 @@ export default function DynamicAppRedirect() {
   return (
     <div style={{ textAlign: "center", marginTop: "30vh" }}>
       <h2>Opening the app...</h2>
-      <p>If nothing happens, you’ll be redirected to the {isAndroid?'Play Store':`App Store`}</p>
+      <p>If nothing happens, you’ll be redirected to the {`App Store`}</p>
     </div>
   );
 }
