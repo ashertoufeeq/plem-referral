@@ -22,7 +22,7 @@ const AppRouter = () => {
               ))
             }
           </Route>
-        <Route path="/app" element={<DynamiceApp/>} />
+        <Route path="/app/*" element={<DynamiceApp/>} />
         <Route path="*" element={<NotFound/>}/>
         <Route path="/" element={<Navigate to={"/campaigns"}/>} />
       </Routes>
