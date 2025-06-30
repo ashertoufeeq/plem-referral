@@ -39,9 +39,9 @@ export default defineConfig({
   },
   server: {
     fs: {
-      allow: ['public/.well-known'], // optional: make sure it's accessible during dev
+      allow: [path.resolve(__dirname)] // allow full project root
     },
-    allowedHosts:["61ba-103-252-216-125.ngrok-free.app"],
+    allowedHosts:["*", "2f45-43-248-241-58.ngrok-free.app"],
     proxy: {
       '^/(v1|api|b2b)': {
         target: 'https://api-stage.plem.in',

@@ -3,6 +3,7 @@ import Login from "screens/login";
 import PrivateRoute from "components/router/components/privateRoute";
 import NotFound from "components/notFound";
 import { MainRoutes, InnerRoutes } from "constants/routes";
+import DynamiceApp from "screens/dynamicapp";
 
 const AppRouter = () => {
   return (
@@ -21,6 +22,7 @@ const AppRouter = () => {
               ))
             }
           </Route>
+        <Route path="/app" element={<DynamiceApp/>} />
         <Route path="*" element={<NotFound/>}/>
         <Route path="/" element={<Navigate to={"/campaigns"}/>} />
       </Routes>
